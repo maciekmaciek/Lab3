@@ -105,21 +105,21 @@ public class OrtoPanel extends JPanel {
                 for (Triangle t : gui.drawnData.triangles) {
                     g2d.drawLine(
                             TransformHandler.ortX(t.a).x,
-                            TransformHandler.ortX(t.a).y,
+                            getHeight() - TransformHandler.ortX(t.a).y,
                             TransformHandler.ortX(t.b).x,
-                            TransformHandler.ortX(t.b).y);
+                            getHeight() - TransformHandler.ortX(t.b).y);
 
                     g2d.drawLine(
                             TransformHandler.ortX(t.a).x,
-                            TransformHandler.ortX(t.a).y,
+                            getHeight() - TransformHandler.ortX(t.a).y,
                             TransformHandler.ortX(t.c).x,
-                            TransformHandler.ortX(t.c).y);
+                            getHeight() - TransformHandler.ortX(t.c).y);
 
                     g2d.drawLine(
                             TransformHandler.ortX(t.c).x,
-                            TransformHandler.ortX(t.c).y,
+                            getHeight() - TransformHandler.ortX(t.c).y,
                             TransformHandler.ortX(t.b).x,
-                            TransformHandler.ortX(t.b).y);
+                            getHeight() - TransformHandler.ortX(t.b).y);
                 }
 
             } else if (title.equals("Y")) {

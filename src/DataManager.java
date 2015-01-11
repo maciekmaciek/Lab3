@@ -67,6 +67,7 @@ public final class DataManager {
             }
 
             br.readLine();
+            br.readLine();
 
             line = br.readLine();
             token = new StringTokenizer(line, " ");
@@ -155,10 +156,10 @@ public final class DataManager {
         if (!f.exists())
             f.createNewFile();
 
-        while (!line.equals("-LIGHT-")) {
+        do {
             line = br.readLine();
             toFile += line + System.lineSeparator();
-        }
+        } while (!line.equals("-LIGHT-"));
         br.close();
 
         bw = new BufferedWriter(new FileWriter(f, false));

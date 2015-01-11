@@ -126,9 +126,11 @@ public final class TransformHandler {
     }
 
     public static Matrix findNormTransformMatrix(Pyramid pyramid, Dimension panelDim) {
+        double eps = 0.001;
         Camera camera = pyramid.camera;
         double angle;
         Matrix tempRes = toMatrix(camera.getPosition());
+        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
         double[][] onesArr = {
                 {1.0, 0.0, 0.0, 0.0},
                 {0.0, 1.0, 0.0, 0.0},
@@ -148,30 +150,39 @@ public final class TransformHandler {
                 -camera.getCenter().getX(),
                 -camera.getCenter().getY(),
                 -camera.getCenter().getZ());
+        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
+
 // obrót wokół OY
 
         angle = Math.PI - Math.atan2(tempRes.get(0, 0), tempRes.get(2, 0));
+
         res = rotY(res, angle);
-        tempRes = rotY(tempRes, angle);
+        tempRes = res.times(toMatrix(camera.getPosition()));
+
+        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
 // obrót wokół OX
 
         angle = -Math.PI / 2 - Math.atan2(tempRes.get(2, 0), tempRes.get(1, 0));
 
         res = rotX(res, angle);
-        tempRes = rotX(tempRes, angle);
+        tempRes = res.times(toMatrix(camera.getPosition()));
+        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
 
 // rzutowanie perspektywiczne
         double d = pyramid.getDistVec().length();
 
-        res = rotY(res, d);
-        tempRes = rotY(tempRes, d);
+        res = perspective(res, d);
+        tempRes = res.times(toMatrix(camera.getPosition()));
+        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
+
 
 // skalowanie do obrazu
         double sx = panelDim.getWidth()/pyramid.getWidth();
         double sy = panelDim.getHeight()/pyramid.getHeight();
 
         res = scale(res, sx, sy, 1);
-        tempRes = scale(tempRes, sx, sy, 1);
+        tempRes = res.times(toMatrix(camera.getPosition()));
+        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
 
 // przesunięcie do 0.0*/
         double tx = pyramid.getWidth();
