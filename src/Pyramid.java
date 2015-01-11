@@ -11,12 +11,14 @@ public class Pyramid {
     Point3D[] edges; //top right, bottom right, bottom left, top left chyba
     Vec3d horVec;
     Vec3d verVec;
+    Vec3d upVec;
     Camera camera;
     Vec3d distVec;
     Light light;
     double PROPORTIONS;
 
     public Pyramid() {
+        upVec = new Vec3d(0,1,0);
         plane = new Plane();
         edges = new Point3D[4];
         for (int i = 0; i < 4; i++)
@@ -29,6 +31,7 @@ public class Pyramid {
     }
 
     public Pyramid(double prop) {
+        upVec = new Vec3d(0,1,0);
         plane = new Plane();
         edges = new Point3D[4];
         for (int i = 0; i < 4; i++)
@@ -56,6 +59,7 @@ public class Pyramid {
     }
 
     private void calcPlane() {
+
         double l, m, n, o, p, r;
         l = camera.getCenter().getX();
         m = camera.getCenter().getY();
@@ -70,24 +74,16 @@ public class Pyramid {
     }
 
     private void calcVec() {
-        double o, p, r, a;
-        a = Math.tan(Math.toRadians(camera.getAngle()));
-        o = distVec.x;
-        p = distVec.y;
-        r = distVec.z;
-        //horizontal orth to distVec, |horVec| = tan(angle)|horVect|
-        horVec.z = Math.sqrt(                       //+
-                (a * a * (o * o + p * p + r * r) * o * o) /
-                        (o * o + r * r));
-        horVec.x = -horVec.z * r / o;                   //-
-        horVec.y = 0;
 
-        //vertical: x = 0; orth to distVec, |verVec| = proportions*|horVec|
-        verVec.z = Math.sqrt(                       //+
-                (PROPORTIONS * PROPORTIONS * (horVec.x * horVec.x + horVec.z * horVec.z) * p * p) /
-                        (p * p + r * r));
-        verVec.y = -verVec.z * r / o;                   //-
-        verVec.x = 0;
+
+        horVec.cross(distVec,upVec);
+        horVec.normalize();
+        double a;
+        a = Math.tan(Math.toRadians(camera.getAngle()));
+        horVec.mul(a*distVec.length());
+        verVec.cross(horVec, distVec);
+        verVec.normalize();
+        verVec.mul(horVec.length()*PROPORTIONS);
     }
 
     public void recalcLight(Light light) {
@@ -113,6 +109,13 @@ public class Pyramid {
                 camera.getCenter().getZ() + horVec.z - verVec.z);
     }
 
+    public double getHeight(){
+        return 2*verVec.length();
+    }
+
+    public double getWidth(){
+        return 2*horVec.length();
+    }
 
     public Plane getPlane() {
         return plane;

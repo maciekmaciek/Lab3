@@ -10,10 +10,10 @@ import java.util.ArrayList;
 public class DrawnData {
     Light light;
     Camera camera;
-    ArrayList<Point3D> points;
+    ArrayList<ColorPoint> points;
     ArrayList<Triangle> triangles;
 
-    public DrawnData(Light light, Camera camera, ArrayList<Point3D> points, ArrayList<Triangle> triangles) {
+    public DrawnData(Light light, Camera camera, ArrayList<ColorPoint> points, ArrayList<Triangle> triangles) {
         this.light = light;
         this.camera = camera;
         this.points = points;

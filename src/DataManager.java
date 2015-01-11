@@ -21,7 +21,7 @@ public final class DataManager {
         Camera cam = new Camera();
         Light lig = new Light();
         ArrayList<Triangle> triangles = new ArrayList<>();
-        ArrayList<Point3D> points = new ArrayList<>();
+        ArrayList<ColorPoint> points = new ArrayList<>();
 
         if (current_file_path.endsWith("cam")) {
             cam = loadCam(current_file_path);
@@ -43,10 +43,15 @@ public final class DataManager {
             for (int i = 0; i < numP; i++) {
                 line = br.readLine();
                 token = new StringTokenizer(line, " ");
-                points.add(new Point3D(
+                points.add(new ColorPoint(
                         Double.parseDouble(token.nextToken()),
                         Double.parseDouble(token.nextToken()),
-                        Double.parseDouble(token.nextToken())));
+                        Double.parseDouble(token.nextToken()),
+                        new Color(Integer.parseInt(token.nextToken()),
+                                Integer.parseInt(token.nextToken()),
+                                Integer.parseInt(token.nextToken())
+                                ))
+                );
             }
             br.readLine();
 
@@ -55,28 +60,14 @@ public final class DataManager {
                 line = br.readLine();
                 token = new StringTokenizer(line, " ");
                 triangles.add(new Triangle(
-                        Integer.parseInt(token.nextToken()),
-                        Integer.parseInt(token.nextToken()),
-                        Integer.parseInt(token.nextToken())));
+                        points.get(Integer.parseInt(token.nextToken())),
+                        points.get(Integer.parseInt(token.nextToken())),
+                        points.get(Integer.parseInt(token.nextToken()))
+                ));
             }
+
             br.readLine();
 
-            for (int i = 0; i < numT; i++) {
-                line = br.readLine();
-                token = new StringTokenizer(line, " ");
-                triangles.get(i).color = new Color(
-                        Integer.parseInt(token.nextToken()),
-                        Integer.parseInt(token.nextToken()),
-                        Integer.parseInt(token.nextToken()));
-                triangles.get(i).kd =
-                        Integer.parseInt(token.nextToken());
-                triangles.get(i).ks =
-                        Integer.parseInt(token.nextToken());
-                triangles.get(i).g =
-                        Integer.parseInt(token.nextToken());
-
-            }
-            br.readLine();
             line = br.readLine();
             token = new StringTokenizer(line, " ");
             lig = new Light();

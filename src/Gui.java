@@ -1,3 +1,4 @@
+import Jama.Matrix;
 import javafx.geometry.Point3D;
 
 import javax.swing.*;
@@ -27,6 +28,8 @@ public class Gui implements ChangeListener, ActionListener {
     Pyramid pyramid;
     final Dimension SCREEN_SIZE = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
     DrawnData drawnData;
+    DrawnData normalizedData;
+    public Matrix currentTransform;
 
 
     public Gui() {
@@ -59,7 +62,7 @@ public class Gui implements ChangeListener, ActionListener {
         xPanel = new OrtoPanel("X", this);
         yPanel = new OrtoPanel("Y", this);
         zPanel = new OrtoPanel("Z", this);
-        pPanel = new PerspectivePanel();
+        pPanel = new PerspectivePanel(this);
 
     }
 
@@ -161,6 +164,7 @@ public class Gui implements ChangeListener, ActionListener {
         yPanel.lightColor = optPanel.colPreview.getBackground();
         zPanel.lightColor = optPanel.colPreview.getBackground();
         recalcPyramid();
+            //normalizedData = normalizeData();
     }
 
     private void setCameraPosFromMouse(char c, Point p) {
@@ -244,11 +248,11 @@ public class Gui implements ChangeListener, ActionListener {
 
     private void recalcPyramid() {
         pyramid.recalcCamera();
-
+        currentTransform = TransformHandler.findNormTransformMatrix(pyramid, pPanel.getSize());
         for (int i = 0; i < 4; i++) {
-            xPanel.edges[i] = TransformHandler.ortX(pyramid.edges[i]);
-            yPanel.edges[i] = TransformHandler.ortY(pyramid.edges[i]);
-            zPanel.edges[i] = TransformHandler.ortZ(pyramid.edges[i]);
+            xPanel.camEdges[i] = TransformHandler.ortX(pyramid.edges[i]);
+            yPanel.camEdges[i] = TransformHandler.ortY(pyramid.edges[i]);
+            zPanel.camEdges[i] = TransformHandler.ortZ(pyramid.edges[i]);
         }
 
         repaintPanels();
@@ -262,26 +266,16 @@ public class Gui implements ChangeListener, ActionListener {
             if (foundCam(e)) {
                 if (!xPanel.cameraActive) {
                     cameraPosOn();
-                    xPanel.cameraActive = true;
-                    xPanel.centerActive = false;
-                    xPanel.lightActive = false;
-
                     repaintPanels();
                 }
             } else if (foundCenter(e)) {
                 if (!xPanel.centerActive) {
                     centerPosOn();
-                    xPanel.cameraActive = false;
-                    xPanel.centerActive = true;
-                    xPanel.lightActive = false;
                     repaintPanels();
                 }
             } else if (foundLight(e)) {
                 if (!xPanel.lightActive) {
                     lightOn();
-                    xPanel.cameraActive = false;
-                    xPanel.centerActive = false;
-                    xPanel.lightActive = true;
                     repaintPanels();
                 }
             } else {

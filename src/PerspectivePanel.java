@@ -7,7 +7,10 @@ import java.awt.*;
  * on 2014-12-31.
  */
 public class PerspectivePanel extends JPanel {
-    public PerspectivePanel() {
+    private Gui gui;
+
+    public PerspectivePanel(Gui gui) {
+        this.gui = gui;
         setOpaque(true);
         setBackground(Color.DARK_GRAY);
     }
@@ -15,11 +18,44 @@ public class PerspectivePanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g;
+        drawFigures(g2d);
         g2d.setPaint(Color.red);
         g2d.setFont(new Font("Arial", Font.BOLD, 30));
         g2d.drawString("Real", 10, 25);
+    }
+
+    private void drawFigures(Graphics2D g2d) {
+        g2d.setPaint(Color.white);
+        g2d.setStroke(new BasicStroke(1));
+        if(gui.CURRENT_FILE_PATH!=null) {
+            for (Triangle t : gui.drawnData.triangles) {
+                int ax = (int)(TransformHandler.pointToPerspective(t.a, gui.currentTransform).getX());
+                int ay = getHeight() - (int)(TransformHandler.pointToPerspective(t.a, gui.currentTransform).getY());
+                int bx = (int)(TransformHandler.pointToPerspective(t.b, gui.currentTransform).getX());
+                int by = getHeight() - (int)(TransformHandler.pointToPerspective(t.b, gui.currentTransform).getY());
+                int cx = (int)(TransformHandler.pointToPerspective(t.c, gui.currentTransform).getX());
+                int cy =  getHeight() - (int)(TransformHandler.pointToPerspective(t.c, gui.currentTransform).getY());
+                g2d.drawLine(
+                        ax,
+                        ay,
+                        bx,
+                        by);
+
+                 g2d.drawLine(
+                        ax,
+                        ay,
+                        cx,
+                        cy);
+
+                 g2d.drawLine(
+                        bx,
+                        by,
+                        cx,
+                        cy);
+
+            }
+        }
     }
 
 }

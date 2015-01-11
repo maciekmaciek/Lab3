@@ -38,24 +38,95 @@ public final class TransformHandler {
         return new Point((int) (position.getX()), (int) (position.getY()));
     }
 
+    public static Point persp(Point3D position) {    //y pionowo, x poziomo
+        return new Point((int) (position.getX()), (int) (position.getY()));
+    }
 
-    public static ArrayList<Point3D> arrayToPerspective(ArrayList<Point3D> points, Camera camera) {
-        Matrix transform = findTransformMatrix(camera);
+
+    /*public static ArrayList<Point3D> arrayToPerspective(ArrayList<Point3D> points, Pyramid pyramid) {
+        Matrix transform = findNormTransformMatrix(pyramid);
         ArrayList<Point3D> result = new ArrayList<>();
         for (Point3D p3D : points) {
-            result.add(pointToPerspective(p3D, transform));
+            result.add(pointToPerspective(p3D, transform,pyramid.camera));
         }
         return result;
-    }
+    }*/
 
-    private static Point3D pointToPerspective(Point3D p3D, Matrix transform) {
+    public static ColorPoint pointToPerspective(ColorPoint p3D, Matrix transform) {
         Matrix pointM = toMatrix(p3D);
         pointM = transform.times(pointM);
-        return null; //pointM;
+
+        return new ColorPoint(
+                (int)(pointM.get(0,0)/pointM.get(3,0)),
+                (int)(pointM.get(1,0)/pointM.get(3,0)),
+                (int)(pointM.get(2,0)/pointM.get(3,0)),
+                p3D.color
+                );
     }
 
-    private static Matrix findTransformMatrix(Camera camera) {
-        Matrix step;
+
+    private static Matrix rotX(Matrix m, double angle){
+        double[][] translation = {
+                {1, 0, 0, 0},
+                {0, Math.cos(angle), -Math.sin(angle), 0},
+                {0, Math.sin(angle), Math.cos(angle), 0},
+                {0, 0, 0, 1}
+        };
+        Matrix step = new Matrix(translation);
+        return step.times(m);
+
+    }
+
+    private static Matrix rotY(Matrix m,double angle){
+        double[][] translation = {
+                {Math.cos(angle), 0, Math.sin(angle), 0},
+                {0, 1, 0, 1},
+                {-Math.sin(angle), 0, Math.cos(angle), 0},
+                {0, 0, 0, 1}
+        };
+        Matrix step = new Matrix(translation);
+        return step.times(m);
+
+    }
+
+    private static Matrix scale(Matrix m, double x, double y, double z){
+        double[][] translation = {
+                {x, 0, 0, 0},
+                {0, y, 0, 0},
+                {0, 0, z, 0},
+                {0, 0, 0, 1}
+        };
+        Matrix step = new Matrix(translation);
+        return step.times(m);
+
+    }
+
+    private static Matrix translate(Matrix m, double x, double y, double z){
+        double[][] translation = {
+                {1, 0, 0, x},
+                {0, 1, 0, y},
+                {0, 0, 1, z},
+                {0, 0, 0, 1}
+        };
+        Matrix step = new Matrix(translation);
+        return step.times(m);
+
+    }
+
+    private static Matrix perspective(Matrix m, double d){
+        double[][] translation = {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 1/d, 1}
+        };
+        Matrix step = new Matrix(translation);
+        return step.times(m);
+
+    }
+
+    public static Matrix findNormTransformMatrix(Pyramid pyramid, Dimension panelDim) {
+        Camera camera = pyramid.camera;
         double angle;
         Matrix tempRes = toMatrix(camera.getPosition());
         double[][] onesArr = {
@@ -67,42 +138,50 @@ public final class TransformHandler {
         Matrix res = new Matrix(onesArr);
 //przesunięcie środka do 0.0
 
-        double[][] toZero = {
-                {1, 0, 0, -camera.getCenter().getX()},
-                {1, 0, 0, -camera.getCenter().getY()},
-                {1, 0, 0, -camera.getCenter().getZ()},
-                {1, 0, 0, 1}
-        };
-        step = new Matrix(toZero);
-        res = step.times(res);
-        tempRes = step.times(tempRes);
+
+        res = translate(res,
+                -camera.getCenter().getX(),
+                -camera.getCenter().getY(),
+                -camera.getCenter().getZ());
+
+        tempRes = translate(tempRes,
+                -camera.getCenter().getX(),
+                -camera.getCenter().getY(),
+                -camera.getCenter().getZ());
 // obrót wokół OY
 
         angle = Math.PI - Math.atan2(tempRes.get(0, 0), tempRes.get(2, 0));
-
-        double[][] transY = {
-                {Math.cos(angle), 0, Math.sin(angle), 0},
-                {0, 1, 0, 1},
-                {-Math.sin(angle), 0, Math.cos(angle), 0},
-                {0, 0, 0, 1}
-        };
-        step = new Matrix(transY);
-        res = step.times(res);
-        tempRes = step.times(tempRes);
+        res = rotY(res, angle);
+        tempRes = rotY(tempRes, angle);
 // obrót wokół OX
 
         angle = -Math.PI / 2 - Math.atan2(tempRes.get(2, 0), tempRes.get(1, 0));
-        double[][] transX = {
-                {1, 0, 0, 0},
-                {0, Math.cos(angle), -Math.sin(angle), 0},
-                {0, Math.sin(angle), Math.cos(angle), 0},
-                {0, 0, 0, 1}
-        };
-        step = new Matrix(transX);
-        res = step.times(res);
+
+        res = rotX(res, angle);
+        tempRes = rotX(tempRes, angle);
+
+// rzutowanie perspektywiczne
+        double d = pyramid.getDistVec().length();
+
+        res = rotY(res, d);
+        tempRes = rotY(tempRes, d);
+
+// skalowanie do obrazu
+        double sx = panelDim.getWidth()/pyramid.getWidth();
+        double sy = panelDim.getHeight()/pyramid.getHeight();
+
+        res = scale(res, sx, sy, 1);
+        tempRes = scale(tempRes, sx, sy, 1);
+
+// przesunięcie do 0.0*/
+        double tx = pyramid.getWidth();
+        double ty = pyramid.getHeight();
+
+        res = translate(res, tx, ty, 0);
 
         return res;
     }
+
 /*
     //private static Point
     private static double[][] toMatrix(String trans) { //String do macierzy 3x3
