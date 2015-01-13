@@ -222,8 +222,22 @@ public final class TransformHandler {
         return c;
     }
 
+    public static double[] findBarycentric(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3){
+        double a, b, c;
+        a = b = c = 0;
+
+        b = (double)(((x1 - x3) * (py - y3) - px + x3))/
+                    ((y2 - y3) * (x1-x3));
+
+        a = ((px - b * (x2 - x3) - x3))/
+                        (x1 - x3);
+
+        c = 1 - a - b;
+        double[] lambdas = {a, b, c};
+        return lambdas;
+    }
     public static int phongLightBeam(int lightC, int vertC, double res){
-        return (int)(vertC*res*lightC); //źle w chuj
+        return (int)(vertC*(res + (double)(lightC/255))); //lepiej
     }
 
 }
