@@ -33,7 +33,7 @@ public class OrtoPanel extends JPanel {
         for (int i = 0; i < 4; i++)
             camEdges[i] = new Point();
         setOpaque(true);
-        setBackground(Color.DARK_GRAY);
+        setBackground(gui.BCG_COLOR);
         addMouseMotionListener(gui.myMouseAdapter);
     }
 

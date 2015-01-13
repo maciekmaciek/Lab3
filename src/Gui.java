@@ -30,6 +30,8 @@ public class Gui implements ChangeListener, ActionListener {
     DrawnData drawnData;
     DrawnData normalizedData;
     public Matrix currentTransform;
+    public Matrix worldToView;
+    public final Color BCG_COLOR = Color.DARK_GRAY;
 
 
     public Gui() {
@@ -120,9 +122,9 @@ public class Gui implements ChangeListener, ActionListener {
         optPanel.camCZ.setText(Integer.toString((int) drawnData.camera.getCenter().getZ()));
         optPanel.camSAng.setValue(drawnData.camera.getAngle());
 
-        optPanel.ligX.setText(Integer.toString((int) drawnData.light.getPosition().getX()));
-        optPanel.ligY.setText(Integer.toString((int) drawnData.light.getPosition().getY()));
-        optPanel.ligZ.setText(Integer.toString((int) drawnData.light.getPosition().getZ()));
+        optPanel.ligX.setText(Integer.toString((int) drawnData.light.getX()));
+        optPanel.ligY.setText(Integer.toString((int) drawnData.light.getY()));
+        optPanel.ligZ.setText(Integer.toString((int) drawnData.light.getZ()));
         setValuesFromText();
     }
 
@@ -140,7 +142,7 @@ public class Gui implements ChangeListener, ActionListener {
 
         pyramid.getCamera().setAngle(optPanel.camSAng.getValue());
 
-        pyramid.getLight().setPosition(new Point3D(
+        pyramid.setLight(new Light(
                 Integer.parseInt(optPanel.ligX.getText()),
                 Integer.parseInt(optPanel.ligY.getText()),
                 Integer.parseInt(optPanel.ligZ.getText())));
@@ -156,9 +158,9 @@ public class Gui implements ChangeListener, ActionListener {
         yPanel.centerPos = TransformHandler.ortY(pyramid.getCamera().getCenter());
         zPanel.centerPos = TransformHandler.ortZ(pyramid.getCamera().getCenter());
 
-        xPanel.lightPos = TransformHandler.ortX(pyramid.getLight().getPosition());
-        yPanel.lightPos = TransformHandler.ortY(pyramid.getLight().getPosition());
-        zPanel.lightPos = TransformHandler.ortZ(pyramid.getLight().getPosition());
+        xPanel.lightPos = TransformHandler.ortX(pyramid.getLight());
+        yPanel.lightPos = TransformHandler.ortY(pyramid.getLight());
+        zPanel.lightPos = TransformHandler.ortZ(pyramid.getLight());
 
         xPanel.lightColor = optPanel.colPreview.getBackground();
         yPanel.lightColor = optPanel.colPreview.getBackground();
@@ -233,14 +235,15 @@ public class Gui implements ChangeListener, ActionListener {
             optPanel.ligY.setText(Integer.toString(p.y));
         }
 
-        pyramid.getLight().setPosition(new Point3D(
+        pyramid.setLight(new Light(
                 Integer.parseInt(optPanel.ligX.getText()),
                 Integer.parseInt(optPanel.ligY.getText()),
-                Integer.parseInt(optPanel.ligZ.getText())));
+                Integer.parseInt(optPanel.ligZ.getText()),
+                pyramid.getLight().getColor()));
 
-        xPanel.lightPos = TransformHandler.ortX(pyramid.getLight().getPosition());
-        yPanel.lightPos = TransformHandler.ortY(pyramid.getLight().getPosition());
-        zPanel.lightPos = TransformHandler.ortZ(pyramid.getLight().getPosition());
+        xPanel.lightPos = TransformHandler.ortX(pyramid.getLight());
+        yPanel.lightPos = TransformHandler.ortY(pyramid.getLight());
+        zPanel.lightPos = TransformHandler.ortZ(pyramid.getLight());
 
         recalcPyramid();
     }
@@ -248,6 +251,7 @@ public class Gui implements ChangeListener, ActionListener {
 
     private void recalcPyramid() {
         pyramid.recalcCamera();
+        worldToView = TransformHandler.worldToView(pyramid);
         currentTransform = TransformHandler.findNormTransformMatrix(pyramid, pPanel.getSize());
         for (int i = 0; i < 4; i++) {
             xPanel.camEdges[i] = TransformHandler.ortX(pyramid.edges[i]);

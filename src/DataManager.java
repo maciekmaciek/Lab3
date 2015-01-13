@@ -73,10 +73,10 @@ public final class DataManager {
             token = new StringTokenizer(line, " ");
             lig = new Light();
 
-            lig.setPosition(new Point3D(
+            lig = new Light(
                     Double.parseDouble(token.nextToken()),
                     Double.parseDouble(token.nextToken()),
-                    Double.parseDouble(token.nextToken())));
+                    Double.parseDouble(token.nextToken()));
 
             lig.setColor(new Color(
                     Integer.parseInt(token.nextToken()),
@@ -168,9 +168,9 @@ public final class DataManager {
             f.createNewFile();
         bw.write(toFile);
         bw.write(
-                light.getPosition().getX() + " " +
-                        light.getPosition().getY() + " " +
-                        light.getPosition().getZ() + " " +
+                light.getX() + " " +
+                        light.getY() + " " +
+                        light.getZ() + " " +
                         light.getColor().getRed() + " " +
                         light.getColor().getGreen() + " " +
                         light.getColor().getBlue() + " ");

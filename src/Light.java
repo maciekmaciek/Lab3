@@ -7,21 +7,22 @@ import java.awt.*;
  * maciekwski@gmail.com
  * on 2015-01-03.
  */
-public class Light {
+public class Light extends Point3D {
     public Light() {
-        position = new Point3D(0, 0, 0);
+        super(0, 0, 0);
     }
 
-    private Point3D position;
     private Color color;
 
-    public Point3D getPosition() {
-        return position;
+    public Light(double v, double v1, double v2) {
+        super(v, v1, v2);
     }
 
-    public void setPosition(Point3D position) {
-        this.position = position;
+    public Light(int i, int i1, int i2, Color color) {
+        super(i, i1, i2);
+        this.color = color;
     }
+
 
     public Color getColor() {
         return color;
