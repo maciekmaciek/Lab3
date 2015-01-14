@@ -34,6 +34,7 @@ public class Gui implements ChangeListener, ActionListener {
     public Matrix worldToView;
     public Matrix viewToFlat;
     public final Color BCG_COLOR = Color.DARK_GRAY;
+    PictureRenderer renderer;
 
 
     public Gui() {
@@ -47,6 +48,7 @@ public class Gui implements ChangeListener, ActionListener {
         appFrame.setVisible(true);
         pyramid = new Pyramid((double) pPanel.getHeight() / (double) pPanel.getWidth());
         System.out.print((double) pPanel.getHeight() / (double) pPanel.getWidth());
+        renderer = new PictureRenderer(this);
     }
 
     private void addComponents() {
@@ -127,6 +129,7 @@ public class Gui implements ChangeListener, ActionListener {
         optPanel.ligX.setText(Integer.toString((int) drawnData.light.getX()));
         optPanel.ligY.setText(Integer.toString((int) drawnData.light.getY()));
         optPanel.ligZ.setText(Integer.toString((int) drawnData.light.getZ()));
+        optPanel.colPreview.setBackground(drawnData.light.getColor());
         setValuesFromText();
     }
 
@@ -147,7 +150,8 @@ public class Gui implements ChangeListener, ActionListener {
         pyramid.setLight(new Light(
                 Integer.parseInt(optPanel.ligX.getText()),
                 Integer.parseInt(optPanel.ligY.getText()),
-                Integer.parseInt(optPanel.ligZ.getText())));
+                Integer.parseInt(optPanel.ligZ.getText()),
+                drawnData.light.getColor()));
 
         pyramid.getLight().setColor(optPanel.colPreview.getBackground());
 
@@ -298,6 +302,7 @@ public class Gui implements ChangeListener, ActionListener {
                     newC = newPoints.get(i);
                 }
             }
+            foundA = foundB = foundC = false;
             newTr.add(new Triangle(newA, newB, newC));
         }
 

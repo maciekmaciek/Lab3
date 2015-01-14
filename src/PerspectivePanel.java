@@ -26,6 +26,9 @@ public class PerspectivePanel extends JPanel {
     }
 
     private void drawFigures(Graphics2D g2d) {
+        if(!(gui.renderer == null) && !(gui.normalizedData == null))
+            g2d.drawImage(gui.renderer.drawPersp(), null, null);
+
         g2d.setPaint(Color.white);
         g2d.setStroke(new BasicStroke(1));
         if (gui.CURRENT_FILE_PATH != null) {

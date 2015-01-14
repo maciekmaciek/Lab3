@@ -30,6 +30,9 @@ public class ColorPoint extends Point3D implements Comparable {
         this.kd = kd;
         this.ks = ks;
         this.g = g;
+
+        normal = new Vec3d();
+        triangles = new ArrayList<>();
     }
 
     public void calcNormal() {

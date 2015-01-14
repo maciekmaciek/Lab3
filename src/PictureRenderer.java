@@ -44,11 +44,9 @@ public class PictureRenderer {
         clearBuf();
         Collections.sort(trList);
         for (int i = 0; i < trList.size(); i++) {
+            trList.get(i).transform(gui.viewToFlat);
             if (isInboundTr(trList.get(i))) {
-                trList.get(i).transform(gui.viewToFlat);
                 iterateTriangle(trList.get(i));
-
-                ;
             }
 
         }
@@ -57,17 +55,20 @@ public class PictureRenderer {
 
     private void iterateTriangle(Triangle tr) {
         Triangle[] split = tr.split();
-        if (split[1] != null)
+        if (split[1] != null) {
+            split[1].transform(gui.viewToFlat);
             iterateFlatTopTr(
-                    split[0].sortedTransformed.get(0),
-                    split[0].sortedTransformed.get(1),
-                    split[0].sortedTransformed.get(2));
-
-        if (split[0] != null)
-            iterateFlatBottomTr(
                     split[1].sortedTransformed.get(0),
                     split[1].sortedTransformed.get(1),
                     split[1].sortedTransformed.get(2));
+        }
+        if (split[0] != null) {
+            split[0].transform(gui.viewToFlat);
+            iterateFlatBottomTr(
+                    split[0].sortedTransformed.get(0),
+                    split[0].sortedTransformed.get(1),
+                    split[0].sortedTransformed.get(2));
+        }
 
         //pętla
         //wyliczz
@@ -79,6 +80,20 @@ public class PictureRenderer {
 
     private void iterateFlatTopTr(ColorPoint v1, ColorPoint v2, ColorPoint v3) {
         //TO DO
+        double invslope1 = (v2.getX() - v1.getX()) / (v2.getY() - v1.getY());
+        double invslope2 = (v3.getX() - v1.getX()) / (v3.getY() - v1.getY());
+
+        double curx1 = v1.getX();
+        double curx2 = v1.getX();
+
+        for (int scanlineY = (int)v1.getY(); scanlineY <= v2.getY(); scanlineY++)
+        {
+            for (int pixelX = (int) curx1; pixelX <= curx2; pixelX++) {
+                putPixel(pixelX, scanlineY, v1, v2, v3);
+            }
+            curx1 += invslope1;
+            curx2 += invslope2;
+        }
     }
 
     private void iterateFlatBottomTr(ColorPoint v1, ColorPoint v2, ColorPoint v3) {

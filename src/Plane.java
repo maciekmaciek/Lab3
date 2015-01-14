@@ -1,3 +1,5 @@
+import javafx.geometry.Point3D;
+
 /**
  * Created by Maciej Wolański
  * maciekwski@gmail.com
@@ -10,6 +12,9 @@ public class Plane {
         this.b = b;
         this.c = c;
         this.d = d;
+    }
+    public Plane(Point3D p1,Point3D p2, Point3D p3){
+
     }
 
     public Plane() {

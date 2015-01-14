@@ -67,6 +67,20 @@ public final class DataManager {
             }
 
             br.readLine();
+            line = br.readLine();
+            token = new StringTokenizer(line, " ");
+            double kd = Double.parseDouble(token.nextToken());
+            double ks = Double.parseDouble(token.nextToken());
+            int g = Integer.parseInt(token.nextToken());
+
+            for(ColorPoint cp:points){
+                cp.kd = kd;
+                cp.ks = ks;
+                cp.g = g;
+            }
+
+            br.readLine();
+
             br.readLine();
 
             line = br.readLine();

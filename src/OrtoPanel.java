@@ -15,7 +15,6 @@ public class OrtoPanel extends JPanel {
     Point lightPos;
     Color lightColor;
     Point[] camEdges;
-    BufferedImage currentImg;
     // Point
     boolean cameraActive;
     boolean centerActive;
@@ -44,8 +43,8 @@ public class OrtoPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
 
         drawFigures(g2d);
-        drawPoints(g2d);
         drawLines(g2d);
+        drawPoints(g2d);
 
 
         g2d.setPaint(Color.red);

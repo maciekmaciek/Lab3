@@ -91,24 +91,21 @@ public class Triangle implements Comparable {
         return t;
     }
 
+    public double getSumZ() {
+        return a.getZ()+b.getZ()+c.getZ();
+    }
+
     @Override
     public int compareTo(Object o) {
         Triangle toCompare = (Triangle) o;
-        if (toCompare.sortedTransformed.isEmpty() ||
-                sortedTransformed.isEmpty())
+
+        double tcZ = toCompare.getSumZ();
+        double tz = getSumZ();
+
+        if (tz > tcZ)
+            return 1;
+        else if (tz == tcZ)
             return 0;
-        else {
-            double tcZ = 0;
-            double tz = 0;
-            for (int i = 0; i < sortedTransformed.size(); i++) {
-                tz += sortedTransformed.get(i).getZ();
-                tcZ += toCompare.sortedTransformed.get(i).getZ();
-            }
-            if (tz > tcZ)
-                return 1;
-            else if (tz == tcZ)
-                return 0;
-            else return -1;
-        }
+        else return -1;
     }
 }
