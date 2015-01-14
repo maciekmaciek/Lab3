@@ -50,12 +50,39 @@ public final class TransformHandler {
         Matrix transform = findNormTransformMatrix(pyramid);
         ArrayList<Point3D> result = new ArrayList<>();
         for (Point3D p3D : points) {
-            result.add(pointToPerspective(p3D, transform,pyramid.camera));
+            result.add(applyTransformToPoint(p3D, transform,pyramid.camera));
         }
         return result;
     }*/
 
-    public static ColorPoint pointToPerspective(ColorPoint p3D, Matrix transform) {
+    public static Point3D applyTransformToPoint(Point3D p3D, Matrix transform){
+        Matrix pointM = toMatrix(p3D);
+        pointM = transform.times(pointM);
+        if(p3D.getClass() == Light.class) {
+            Light p3D2 = (Light) p3D;
+            return new Light((int)(pointM.get(0,0)/pointM.get(3,0)),
+                    (int)(pointM.get(1,0)/pointM.get(3,0)),
+                    (int)(pointM.get(2,0)/pointM.get(3,0)),
+                    p3D2.getColor());
+        }
+        else if(p3D.getClass() == ColorPoint.class) {
+            ColorPoint p3D1 = (ColorPoint) p3D;
+            return new ColorPoint((int)(pointM.get(0,0)/pointM.get(3,0)),
+                    (int)(pointM.get(1,0)/pointM.get(3,0)),
+                    (int)(pointM.get(2,0)/pointM.get(3,0)),
+                    p3D1.color,
+                    p3D1.kd,
+                    p3D1.ks,
+                    p3D1.g
+                    );
+        }
+        else return new Point3D((int)(pointM.get(0,0)/pointM.get(3,0)),
+                    (int)(pointM.get(1,0)/pointM.get(3,0)),
+                    (int)(pointM.get(2,0)/pointM.get(3,0)));
+    }
+
+
+   /* public static ColorPoint+ applyTransformToPoint(ColorPoint p3D, Matrix transform) {
         Matrix pointM = toMatrix(p3D);
         pointM = transform.times(pointM);
 
@@ -67,7 +94,7 @@ public final class TransformHandler {
                 );
     }
 
-
+*/
     private static Matrix rotX(Matrix m, double angle){
         double[][] translation = {
                 {1, 0, 0, 0},
@@ -173,8 +200,15 @@ public final class TransformHandler {
         return res;
 
     }
-    public static Matrix findNormTransformMatrix(Pyramid pyramid, Dimension panelDim) {
-        Matrix res = worldToView(pyramid);
+    public static Matrix viewToFlat(Pyramid pyramid, Dimension panelDim) {
+        double[][] onesArr = {
+                {1.0, 0.0, 0.0, 0.0},
+                {0.0, 1.0, 0.0, 0.0},
+                {0.0, 0.0, 1.0, 0.0},
+                {0.0, 0.0, 0.0, 1.0},
+        };
+        Matrix res = new Matrix(onesArr);
+
 // rzutowanie perspektywiczne
         double d = pyramid.getDistVec().length();
 
@@ -193,14 +227,21 @@ public final class TransformHandler {
         res = translate(res, tx, ty, 0);
 
         return res;
+
     }
 
-    public static Color phongLight(Light l, ColorPoint cp){
+    public static Matrix findNormTransformMatrix(Pyramid pyramid, Dimension panelDim) {
+        Matrix res = worldToView(pyramid);
+        res = viewToFlat(pyramid,panelDim).times(res);
+        return res;
+    }
+
+    public static Color phongLight(Light l, ColorPoint cp, Point3D camPos){    //W UKŁADZIE OBSERWATORA
         HashMap<Integer,Integer> konik;
         Vec3d lm = new Vec3d(l.getX() - cp.getX(),l.getY() - cp.getY(), l.getZ() - cp.getZ());
         lm.normalize();
         Vec3d norm = cp.normal;
-        Vec3d vw = new Vec3d(cp.getX(), cp.getY(), cp.getZ());
+        Vec3d vw = new Vec3d(camPos.getX() - cp.getX(), camPos.getY() - cp.getY(), camPos.getZ() - cp.getZ());
         vw.normalize();
         vw.mul(0.5);
         vw.add(lm);
@@ -221,10 +262,8 @@ public final class TransformHandler {
                         result));
         return c;
     }
-
-    public static double[] findBarycentric(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3){
+    public static double[] findBarycentric(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3){ // W UKŁADZIE OBSERWATORA
         double a, b, c;
-        a = b = c = 0;
 
         b = (double)(((x1 - x3) * (py - y3) - px + x3))/
                     ((y2 - y3) * (x1-x3));
@@ -236,8 +275,8 @@ public final class TransformHandler {
         double[] lambdas = {a, b, c};
         return lambdas;
     }
+
     public static int phongLightBeam(int lightC, int vertC, double res){
         return (int)(vertC*(res + (double)(lightC/255))); //lepiej
     }
-
 }

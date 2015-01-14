@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 /**
  * Created by Maciej Wolański
@@ -31,6 +32,7 @@ public class Gui implements ChangeListener, ActionListener {
     DrawnData normalizedData;
     public Matrix currentTransform;
     public Matrix worldToView;
+    public Matrix viewToFlat;
     public final Color BCG_COLOR = Color.DARK_GRAY;
 
 
@@ -252,7 +254,9 @@ public class Gui implements ChangeListener, ActionListener {
     private void recalcPyramid() {
         pyramid.recalcCamera();
         worldToView = TransformHandler.worldToView(pyramid);
+        viewToFlat = TransformHandler.viewToFlat(pyramid, pPanel.getSize());
         currentTransform = TransformHandler.findNormTransformMatrix(pyramid, pPanel.getSize());
+        normalizeDataToView();
         for (int i = 0; i < 4; i++) {
             xPanel.camEdges[i] = TransformHandler.ortX(pyramid.edges[i]);
             yPanel.camEdges[i] = TransformHandler.ortY(pyramid.edges[i]);
@@ -262,6 +266,44 @@ public class Gui implements ChangeListener, ActionListener {
         repaintPanels();
     }
 
+
+    private void normalizeDataToView(){
+        Light newL = (Light)TransformHandler.applyTransformToPoint(pyramid.getLight(), worldToView);
+        Camera newCam = new Camera();
+        newCam.setAngle(drawnData.camera.getAngle());
+        newCam.setCenter(new Point3D(0,0,0));
+        newCam.setPosition(TransformHandler.applyTransformToPoint(drawnData.camera.getPosition(), worldToView));
+        ArrayList<ColorPoint>newPoints = new ArrayList<ColorPoint>();
+        for(ColorPoint cp:drawnData.points){
+            newPoints.add((ColorPoint)TransformHandler.applyTransformToPoint(cp, worldToView));
+        }
+
+        //BARDZO NIEŁADNE PRZEMAPOWANIE!
+        ArrayList<Triangle> newTr = new ArrayList<Triangle>();
+        boolean foundA, foundB, foundC;
+        foundA=foundB=foundC = false;
+        for(Triangle tr:drawnData.triangles){
+            ColorPoint newA = (ColorPoint)TransformHandler.applyTransformToPoint(tr.a, worldToView);
+            ColorPoint newB = (ColorPoint)TransformHandler.applyTransformToPoint(tr.b, worldToView);
+            ColorPoint newC = (ColorPoint)TransformHandler.applyTransformToPoint(tr.c, worldToView);
+            for(int i = 0; i<newPoints.size() && !(foundA && foundB && foundC); i++) {
+                if (!foundA && newA.equals(newPoints.get(i))) {
+                    foundA = true;
+                    newA = newPoints.get(i);
+                } else if (!foundB && newB.equals(newPoints.get(i))) {
+                    foundB = true;
+                    newB = newPoints.get(i);
+                } else if (!foundC && newC.equals(newPoints.get(i))) {
+                    foundC = true;
+                    newC = newPoints.get(i);
+                }
+            }
+            newTr.add(new Triangle(newA, newB, newC));
+        }
+
+        normalizedData = new DrawnData(
+                newL, newCam, newPoints, newTr);
+    }
     class MyMouseAdapter extends MouseAdapter {
         final Point pp = new Point();
 

@@ -18,9 +18,17 @@ public class ColorPoint extends Point3D implements Comparable{
     ArrayList<Triangle> triangles;
     public ColorPoint(double x, double y, double z, Color c){
         super(x,y,z);
-        c = color;
+        color = c;
         normal = new Vec3d();
         triangles = new ArrayList<>();
+    }
+
+    public ColorPoint(int i, int i1, int i2, Color color, double kd, double ks, int g) {
+        super(i,i1,i2);
+        this.color= color;
+        this.kd = kd;
+        this.ks = ks;
+        this.g = g;
     }
 
     public void calcNormal(){
@@ -42,5 +50,14 @@ public class ColorPoint extends Point3D implements Comparable{
         else if(cp.getY() == getY())
             return 0;
         else return 1;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof ColorPoint){
+            ColorPoint c = (ColorPoint) o;
+            return c.getX() == getX() && c.getY() == getY() && c.getZ() == getZ();
+        }
+        return false;
     }
 }

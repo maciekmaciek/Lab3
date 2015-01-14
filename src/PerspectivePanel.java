@@ -30,12 +30,12 @@ public class PerspectivePanel extends JPanel {
         g2d.setStroke(new BasicStroke(1));
         if(gui.CURRENT_FILE_PATH!=null) {
             for (Triangle t : gui.drawnData.triangles) {
-                int ax = (int)(TransformHandler.pointToPerspective(t.a, gui.currentTransform).getX());
-                int ay = getHeight() - (int)(TransformHandler.pointToPerspective(t.a, gui.currentTransform).getY());
-                int bx = (int)(TransformHandler.pointToPerspective(t.b, gui.currentTransform).getX());
-                int by = getHeight() - (int)(TransformHandler.pointToPerspective(t.b, gui.currentTransform).getY());
-                int cx = (int)(TransformHandler.pointToPerspective(t.c, gui.currentTransform).getX());
-                int cy =  getHeight() - (int)(TransformHandler.pointToPerspective(t.c, gui.currentTransform).getY());
+                int ax = (int)(TransformHandler.applyTransformToPoint(t.a, gui.currentTransform).getX());
+                int ay = getHeight() - (int)(TransformHandler.applyTransformToPoint(t.a, gui.currentTransform).getY());
+                int bx = (int)(TransformHandler.applyTransformToPoint(t.b, gui.currentTransform).getX());
+                int by = getHeight() - (int)(TransformHandler.applyTransformToPoint(t.b, gui.currentTransform).getY());
+                int cx = (int)(TransformHandler.applyTransformToPoint(t.c, gui.currentTransform).getX());
+                int cy =  getHeight() - (int)(TransformHandler.applyTransformToPoint(t.c, gui.currentTransform).getY());
                 g2d.drawLine(
                         ax,
                         ay,

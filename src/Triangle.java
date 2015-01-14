@@ -30,15 +30,13 @@ public class Triangle implements Comparable{
         sortedTransformed = new ArrayList<>();
     }
 
-    void transform(Matrix fullT, Matrix halfT){
-        sortedTransformed.add(TransformHandler.pointToPerspective(a, fullT));
-        sortedTransformed.get(0).add(0, 0, TransformHandler.pointToPerspective(a, halfT).getZ());
-        sortedTransformed.add(TransformHandler.pointToPerspective(b, fullT));
-        sortedTransformed.get(1).add(0, 0, TransformHandler.pointToPerspective(b, halfT).getZ());
-        sortedTransformed.add(TransformHandler.pointToPerspective(c, fullT));
-        sortedTransformed.get(2).add(0, 0, TransformHandler.pointToPerspective(b, halfT).getZ());
+    void transform(Matrix transform){
+        sortedTransformed.add((ColorPoint)TransformHandler.applyTransformToPoint(a, transform));
+        sortedTransformed.add((ColorPoint)TransformHandler.applyTransformToPoint(b, transform));
+        sortedTransformed.add((ColorPoint)TransformHandler.applyTransformToPoint(c, transform));
         Collections.sort(sortedTransformed);
     }
+
     void calcNormal(){
         normal = new Vec3d();
         Vec3d v1 = new Vec3d(b.getX() - a.getX(), b.getY() - a.getY(), b.getZ() - a.getZ());

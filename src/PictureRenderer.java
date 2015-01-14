@@ -7,7 +7,6 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 /**
  * Created by Maciej Wolański
@@ -43,12 +42,14 @@ public class PictureRenderer {
 
 
     public BufferedImage drawPersp(){
-        ArrayList<Triangle> trList = gui.drawnData.triangles;
+        ArrayList<Triangle> trList = gui.normalizedData.triangles;
         clearBuf();
-        pairForPersp();
         Collections.sort(trList);
         for(int i = 0; i<trList.size(); i++){
-            if(isInboundP(trList.get(i))){
+            if(isInboundTr(trList.get(i))){
+                trList.get(i).transform(gui.viewToFlat);
+                iterateTriangle(trList.get(i));
+
                 ;
             }
 
@@ -56,9 +57,18 @@ public class PictureRenderer {
         return deepCopy(img);
     }
 
-    private boolean isInboundP(Triangle triangle) {
+    private void iterateTriangle(Triangle tr) {
+        Triangle[] split = tr.split();
+        //pętla
+            //wyliczz
+            //odwróć rzutownaie
+                //jak mniejszy od pixela to
+                    // licz kolor
+                    //
+    }
+
+    private boolean isInboundTr(Triangle triangle) {
         int x1, x2, x3, y1, y2, y3;
-        x1 = x2 = x3 = y1 = y2 = y3 = 0;
         x1 = (int)(triangle.sortedTransformed.get(0).getX());
         y1 = (int)(triangle.sortedTransformed.get(0).getY());
         x2 = (int)(triangle.sortedTransformed.get(1).getX());
@@ -78,6 +88,21 @@ public class PictureRenderer {
         return true;
     }
 
+    private boolean isInboundP(Point3D p3D){
+        if(p3D.getX() > gui.pPanel.getWidth() || p3D.getX() < 0){
+            return false;
+        }
+        if(p3D.getY() > gui.pPanel.getHeight() || p3D.getY() < 0){
+            return false;
+        }
+
+        return true;
+
+    }
+
+    private void putPixel(double[] bar, ColorPoint a, ColorPoint b, ColorPoint c, ColorPoint p){
+       // ColorPoint cp = new ColorPoint()
+    }
     private ArrayList<Triangle> sortFull(ArrayList<Triangle> trList) {
         return null;
     }
@@ -89,13 +114,4 @@ public class PictureRenderer {
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
-    public void pairForPersp(){
-        for(ColorPoint cp: gui.drawnData.points){
-            Point3D p3d = TransformHandler.pointToPerspective(cp,gui.currentTransform);
-            p3d.add(0,0,TransformHandler.pointToPerspective(cp,gui.worldToView).getZ());
-            Pair p = new Pair<ColorPoint,Point3D>(cp, p3d);
-            //transPoints.add(p);
-
-        }
-    }
 }
