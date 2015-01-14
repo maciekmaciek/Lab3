@@ -168,7 +168,7 @@ public class Gui implements ChangeListener, ActionListener {
         yPanel.lightColor = optPanel.colPreview.getBackground();
         zPanel.lightColor = optPanel.colPreview.getBackground();
         recalcPyramid();
-            //normalizedData = normalizeData();
+        //normalizedData = normalizeData();
     }
 
     private void setCameraPosFromMouse(char c, Point p) {
@@ -267,26 +267,26 @@ public class Gui implements ChangeListener, ActionListener {
     }
 
 
-    private void normalizeDataToView(){
-        Light newL = (Light)TransformHandler.applyTransformToPoint(pyramid.getLight(), worldToView);
+    private void normalizeDataToView() {
+        Light newL = (Light) TransformHandler.applyTransformToPoint(pyramid.getLight(), worldToView);
         Camera newCam = new Camera();
         newCam.setAngle(drawnData.camera.getAngle());
-        newCam.setCenter(new Point3D(0,0,0));
+        newCam.setCenter(new Point3D(0, 0, 0));
         newCam.setPosition(TransformHandler.applyTransformToPoint(drawnData.camera.getPosition(), worldToView));
-        ArrayList<ColorPoint>newPoints = new ArrayList<ColorPoint>();
-        for(ColorPoint cp:drawnData.points){
-            newPoints.add((ColorPoint)TransformHandler.applyTransformToPoint(cp, worldToView));
+        ArrayList<ColorPoint> newPoints = new ArrayList<ColorPoint>();
+        for (ColorPoint cp : drawnData.points) {
+            newPoints.add((ColorPoint) TransformHandler.applyTransformToPoint(cp, worldToView));
         }
 
         //BARDZO NIEŁADNE PRZEMAPOWANIE!
         ArrayList<Triangle> newTr = new ArrayList<Triangle>();
         boolean foundA, foundB, foundC;
-        foundA=foundB=foundC = false;
-        for(Triangle tr:drawnData.triangles){
-            ColorPoint newA = (ColorPoint)TransformHandler.applyTransformToPoint(tr.a, worldToView);
-            ColorPoint newB = (ColorPoint)TransformHandler.applyTransformToPoint(tr.b, worldToView);
-            ColorPoint newC = (ColorPoint)TransformHandler.applyTransformToPoint(tr.c, worldToView);
-            for(int i = 0; i<newPoints.size() && !(foundA && foundB && foundC); i++) {
+        foundA = foundB = foundC = false;
+        for (Triangle tr : drawnData.triangles) {
+            ColorPoint newA = (ColorPoint) TransformHandler.applyTransformToPoint(tr.a, worldToView);
+            ColorPoint newB = (ColorPoint) TransformHandler.applyTransformToPoint(tr.b, worldToView);
+            ColorPoint newC = (ColorPoint) TransformHandler.applyTransformToPoint(tr.c, worldToView);
+            for (int i = 0; i < newPoints.size() && !(foundA && foundB && foundC); i++) {
                 if (!foundA && newA.equals(newPoints.get(i))) {
                     foundA = true;
                     newA = newPoints.get(i);
@@ -304,6 +304,7 @@ public class Gui implements ChangeListener, ActionListener {
         normalizedData = new DrawnData(
                 newL, newCam, newPoints, newTr);
     }
+
     class MyMouseAdapter extends MouseAdapter {
         final Point pp = new Point();
 

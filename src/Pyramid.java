@@ -18,7 +18,7 @@ public class Pyramid {
     double PROPORTIONS;
 
     public Pyramid() {
-        upVec = new Vec3d(0,1,0);
+        upVec = new Vec3d(0, 1, 0);
         plane = new Plane();
         edges = new Point3D[4];
         for (int i = 0; i < 4; i++)
@@ -31,7 +31,7 @@ public class Pyramid {
     }
 
     public Pyramid(double prop) {
-        upVec = new Vec3d(0,1,0);
+        upVec = new Vec3d(0, 1, 0);
         plane = new Plane();
         edges = new Point3D[4];
         for (int i = 0; i < 4; i++)
@@ -76,14 +76,14 @@ public class Pyramid {
     private void calcVec() {
 
 
-        horVec.cross(distVec,upVec);
+        horVec.cross(distVec, upVec);
         horVec.normalize();
         double a;
         a = Math.tan(Math.toRadians(camera.getAngle()));
-        horVec.mul(a*distVec.length());
+        horVec.mul(a * distVec.length());
         verVec.cross(horVec, distVec);
         verVec.normalize();
-        verVec.mul(horVec.length()*PROPORTIONS);
+        verVec.mul(horVec.length() * PROPORTIONS);
     }
 
     public void recalcLight(Light light) {
@@ -109,12 +109,12 @@ public class Pyramid {
                 camera.getCenter().getZ() + horVec.z - verVec.z);
     }
 
-    public double getHeight(){
-        return 2*verVec.length();
+    public double getHeight() {
+        return 2 * verVec.length();
     }
 
-    public double getWidth(){
-        return 2*horVec.length();
+    public double getWidth() {
+        return 2 * horVec.length();
     }
 
     public Plane getPlane() {

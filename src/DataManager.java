@@ -44,12 +44,12 @@ public final class DataManager {
                 line = br.readLine();
                 token = new StringTokenizer(line, " ");
                 points.add(new ColorPoint(
-                        Double.parseDouble(token.nextToken()),
-                        Double.parseDouble(token.nextToken()),
-                        Double.parseDouble(token.nextToken()),
-                        new Color(Integer.parseInt(token.nextToken()),
-                                Integer.parseInt(token.nextToken()),
-                                Integer.parseInt(token.nextToken())
+                                Double.parseDouble(token.nextToken()),
+                                Double.parseDouble(token.nextToken()),
+                                Double.parseDouble(token.nextToken()),
+                                new Color(Integer.parseInt(token.nextToken()),
+                                        Integer.parseInt(token.nextToken()),
+                                        Integer.parseInt(token.nextToken())
                                 ))
                 );
             }

@@ -16,7 +16,7 @@ public class OrtoPanel extends JPanel {
     Color lightColor;
     Point[] camEdges;
     BufferedImage currentImg;
-   // Point
+    // Point
     boolean cameraActive;
     boolean centerActive;
     boolean lightActive;
@@ -100,7 +100,7 @@ public class OrtoPanel extends JPanel {
         //g2d.drawImage(currentImg, null,0,0);
         g2d.setPaint(Color.white);
         g2d.setStroke(new BasicStroke(1));
-        if(gui.CURRENT_FILE_PATH!=null) {
+        if (gui.CURRENT_FILE_PATH != null) {
             if (title.equals("X")) {
                 for (Triangle t : gui.drawnData.triangles) {
                     g2d.drawLine(
@@ -142,7 +142,7 @@ public class OrtoPanel extends JPanel {
                             TransformHandler.ortY(t.b).x,
                             getHeight() - TransformHandler.ortY(t.b).y);
                 }
-             } else {
+            } else {
                 for (Triangle t : gui.drawnData.triangles) {
                     g2d.drawLine(
                             TransformHandler.ortZ(t.a).x,

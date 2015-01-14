@@ -3,7 +3,6 @@ import com.sun.javafx.geom.Vec3d;
 import javafx.geometry.Point3D;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -55,47 +54,45 @@ public final class TransformHandler {
         return result;
     }*/
 
-    public static Point3D applyTransformToPoint(Point3D p3D, Matrix transform){
+    public static Point3D applyTransformToPoint(Point3D p3D, Matrix transform) {
         Matrix pointM = toMatrix(p3D);
         pointM = transform.times(pointM);
-        if(p3D.getClass() == Light.class) {
+        if (p3D.getClass() == Light.class) {
             Light p3D2 = (Light) p3D;
-            return new Light((int)(pointM.get(0,0)/pointM.get(3,0)),
-                    (int)(pointM.get(1,0)/pointM.get(3,0)),
-                    (int)(pointM.get(2,0)/pointM.get(3,0)),
+            return new Light((int) (pointM.get(0, 0) / pointM.get(3, 0)),
+                    (int) (pointM.get(1, 0) / pointM.get(3, 0)),
+                    (int) (pointM.get(2, 0) / pointM.get(3, 0)),
                     p3D2.getColor());
-        }
-        else if(p3D.getClass() == ColorPoint.class) {
+        } else if (p3D.getClass() == ColorPoint.class) {
             ColorPoint p3D1 = (ColorPoint) p3D;
-            return new ColorPoint((int)(pointM.get(0,0)/pointM.get(3,0)),
-                    (int)(pointM.get(1,0)/pointM.get(3,0)),
-                    (int)(pointM.get(2,0)/pointM.get(3,0)),
+            return new ColorPoint((int) (pointM.get(0, 0) / pointM.get(3, 0)),
+                    (int) (pointM.get(1, 0) / pointM.get(3, 0)),
+                    (int) (pointM.get(2, 0) / pointM.get(3, 0)),
                     p3D1.color,
                     p3D1.kd,
                     p3D1.ks,
                     p3D1.g
-                    );
-        }
-        else return new Point3D((int)(pointM.get(0,0)/pointM.get(3,0)),
-                    (int)(pointM.get(1,0)/pointM.get(3,0)),
-                    (int)(pointM.get(2,0)/pointM.get(3,0)));
+            );
+        } else return new Point3D((int) (pointM.get(0, 0) / pointM.get(3, 0)),
+                (int) (pointM.get(1, 0) / pointM.get(3, 0)),
+                (int) (pointM.get(2, 0) / pointM.get(3, 0)));
     }
 
 
-   /* public static ColorPoint+ applyTransformToPoint(ColorPoint p3D, Matrix transform) {
-        Matrix pointM = toMatrix(p3D);
-        pointM = transform.times(pointM);
+    /* public static ColorPoint+ applyTransformToPoint(ColorPoint p3D, Matrix transform) {
+         Matrix pointM = toMatrix(p3D);
+         pointM = transform.times(pointM);
 
-        return new ColorPoint(
-                (int)(pointM.get(0,0)/pointM.get(3,0)),
-                (int)(pointM.get(1,0)/pointM.get(3,0)),
-                (int)(pointM.get(2,0)/pointM.get(3,0)),
-                p3D.color
-                );
-    }
+         return new ColorPoint(
+                 (int)(pointM.get(0,0)/pointM.get(3,0)),
+                 (int)(pointM.get(1,0)/pointM.get(3,0)),
+                 (int)(pointM.get(2,0)/pointM.get(3,0)),
+                 p3D.color
+                 );
+     }
 
-*/
-    private static Matrix rotX(Matrix m, double angle){
+ */
+    private static Matrix rotX(Matrix m, double angle) {
         double[][] translation = {
                 {1, 0, 0, 0},
                 {0, Math.cos(angle), -Math.sin(angle), 0},
@@ -107,7 +104,7 @@ public final class TransformHandler {
 
     }
 
-    private static Matrix rotY(Matrix m,double angle){
+    private static Matrix rotY(Matrix m, double angle) {
         double[][] translation = {
                 {Math.cos(angle), 0, Math.sin(angle), 0},
                 {0, 1, 0, 1},
@@ -119,7 +116,7 @@ public final class TransformHandler {
 
     }
 
-    private static Matrix scale(Matrix m, double x, double y, double z){
+    private static Matrix scale(Matrix m, double x, double y, double z) {
         double[][] translation = {
                 {x, 0, 0, 0},
                 {0, y, 0, 0},
@@ -131,7 +128,7 @@ public final class TransformHandler {
 
     }
 
-    private static Matrix translate(Matrix m, double x, double y, double z){
+    private static Matrix translate(Matrix m, double x, double y, double z) {
         double[][] translation = {
                 {1, 0, 0, x},
                 {0, 1, 0, y},
@@ -143,23 +140,23 @@ public final class TransformHandler {
 
     }
 
-    private static Matrix perspective(Matrix m, double d){
+    private static Matrix perspective(Matrix m, double d) {
         double[][] translation = {
                 {1, 0, 0, 0},
                 {0, 1, 0, 0},
                 {0, 0, 0, 0},
-                {0, 0, 1/d, 1}
+                {0, 0, 1 / d, 1}
         };
         Matrix step = new Matrix(translation);
         return step.times(m);
 
     }
 
-    public static Matrix worldToView(Pyramid pyramid){
+    public static Matrix worldToView(Pyramid pyramid) {
         Camera camera = pyramid.camera;
         double angle;
         Matrix tempRes = toMatrix(camera.getPosition());
-        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
+        System.out.println(tempRes.get(0, 0) / tempRes.get(3, 0) + ", " + tempRes.get(1, 0) / tempRes.get(3, 0) + ", " + tempRes.get(2, 0) / tempRes.get(3, 0));
         double[][] onesArr = {
                 {1.0, 0.0, 0.0, 0.0},
                 {0.0, 1.0, 0.0, 0.0},
@@ -179,7 +176,7 @@ public final class TransformHandler {
                 -camera.getCenter().getX(),
                 -camera.getCenter().getY(),
                 -camera.getCenter().getZ());
-        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
+        System.out.println(tempRes.get(0, 0) / tempRes.get(3, 0) + ", " + tempRes.get(1, 0) / tempRes.get(3, 0) + ", " + tempRes.get(2, 0) / tempRes.get(3, 0));
 
 // obrót wokół OY
 
@@ -188,18 +185,19 @@ public final class TransformHandler {
         res = rotY(res, angle);
         tempRes = res.times(toMatrix(camera.getPosition()));
 
-        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
+        System.out.println(tempRes.get(0, 0) / tempRes.get(3, 0) + ", " + tempRes.get(1, 0) / tempRes.get(3, 0) + ", " + tempRes.get(2, 0) / tempRes.get(3, 0));
 // obrót wokół OX
 
         angle = -Math.PI / 2 - Math.atan2(tempRes.get(2, 0), tempRes.get(1, 0));
 
         res = rotX(res, angle);
         tempRes = res.times(toMatrix(camera.getPosition()));
-        System.out.println(tempRes.get(0,0)/tempRes.get(3,0) + ", " + tempRes.get(1,0)/tempRes.get(3,0) + ", " + tempRes.get(2,0)/tempRes.get(3,0));
+        System.out.println(tempRes.get(0, 0) / tempRes.get(3, 0) + ", " + tempRes.get(1, 0) / tempRes.get(3, 0) + ", " + tempRes.get(2, 0) / tempRes.get(3, 0));
 
         return res;
 
     }
+
     public static Matrix viewToFlat(Pyramid pyramid, Dimension panelDim) {
         double[][] onesArr = {
                 {1.0, 0.0, 0.0, 0.0},
@@ -215,8 +213,8 @@ public final class TransformHandler {
         res = perspective(res, d);
 
 // skalowanie do obrazu
-        double sx = panelDim.getWidth()/pyramid.getWidth();
-        double sy = panelDim.getHeight()/pyramid.getHeight();
+        double sx = panelDim.getWidth() / pyramid.getWidth();
+        double sy = panelDim.getHeight() / pyramid.getHeight();
 
         res = scale(res, sx, sy, 1);
 
@@ -232,20 +230,20 @@ public final class TransformHandler {
 
     public static Matrix findNormTransformMatrix(Pyramid pyramid, Dimension panelDim) {
         Matrix res = worldToView(pyramid);
-        res = viewToFlat(pyramid,panelDim).times(res);
+        res = viewToFlat(pyramid, panelDim).times(res);
         return res;
     }
 
-    public static Color phongLight(Light l, ColorPoint cp, Point3D camPos){    //W UKŁADZIE OBSERWATORA
-        HashMap<Integer,Integer> konik;
-        Vec3d lm = new Vec3d(l.getX() - cp.getX(),l.getY() - cp.getY(), l.getZ() - cp.getZ());
+    public static Color phongLight(Light l, ColorPoint cp, Point3D camPos) {    //W UKŁADZIE OBSERWATORA
+        HashMap<Integer, Integer> konik;
+        Vec3d lm = new Vec3d(l.getX() - cp.getX(), l.getY() - cp.getY(), l.getZ() - cp.getZ());
         lm.normalize();
         Vec3d norm = cp.normal;
         Vec3d vw = new Vec3d(camPos.getX() - cp.getX(), camPos.getY() - cp.getY(), camPos.getZ() - cp.getZ());
         vw.normalize();
         vw.mul(0.5);
         vw.add(lm);
-        double result = cp.kd*norm.dot(lm) + cp.ks*Math.max(Math.pow(norm.dot(vw), cp.g), 0);
+        double result = cp.kd * norm.dot(lm) + cp.ks * Math.max(Math.pow(norm.dot(vw), cp.g), 0);
         //Ka + Kd * (N dot L) + Ks * (N dot ( L + V / 2))^n
         Color c = new Color(
                 phongLightBeam(
@@ -262,21 +260,43 @@ public final class TransformHandler {
                         result));
         return c;
     }
-    public static double[] findBarycentric(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3){ // W UKŁADZIE OBSERWATORA
+
+    public static double[] findBarycentric(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3) { // W UKŁADZIE OBSERWATORA
         double a, b, c;
 
-        b = (double)(((x1 - x3) * (py - y3) - px + x3))/
-                    ((y2 - y3) * (x1-x3));
+        b = (double) (((x1 - x3) * (py - y3) - px + x3)) /
+                ((y2 - y3) * (x1 - x3));
 
-        a = ((px - b * (x2 - x3) - x3))/
-                        (x1 - x3);
+        a = ((px - b * (x2 - x3) - x3)) /
+                (x1 - x3);
 
         c = 1 - a - b;
         double[] lambdas = {a, b, c};
         return lambdas;
     }
 
-    public static int phongLightBeam(int lightC, int vertC, double res){
-        return (int)(vertC*(res + (double)(lightC/255))); //lepiej
+    public static Color findColorByBar(double l1, double l2, double l3, int r1, int g1, int b1, int r2, int g2, int b2, int r3, int g3, int b3) {
+        int r = (int) (r1 * l1) + (int) (r2 * l2) + (int) (r3 * l3);
+        int g = (int) (g1 * l1) + (int) (g2 * l2) + (int) (g3 * l3);
+        int b = (int) (b1 * l1) + (int) (b2 * l2) + (int) (b3 * l3);
+        return new Color(r, g, b);
+    }
+
+    public static Vec3d findNormByBar(double l1, double l2, double l3, Vec3d n1, Vec3d n2, Vec3d n3) {
+        Vec3d nn1 = new Vec3d(n1);
+        Vec3d nn2 = new Vec3d(n2);
+        Vec3d nn3 = new Vec3d(n3);
+        nn1.mul(l1);
+        nn2.mul(l2);
+        nn3.mul(l3);
+        Vec3d norm = new Vec3d();
+        norm.add(nn1, nn2);
+        norm.add(nn3);
+        norm.normalize();//konieczne?
+        return norm;
+    }
+
+    public static int phongLightBeam(int lightC, int vertC, double res) {
+        return (int) (vertC * (res + (double) (lightC / 255))); //lepiej
     }
 }
