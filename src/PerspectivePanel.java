@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Created by Maciej Wolański
@@ -8,11 +9,13 @@ import java.awt.*;
  */
 public class PerspectivePanel extends JPanel {
     private Gui gui;
+    private BufferedImage img;
 
     public PerspectivePanel(Gui gui) {
         this.gui = gui;
         setOpaque(true);
         setBackground(Color.DARK_GRAY);
+        img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
 
     @Override
@@ -27,7 +30,7 @@ public class PerspectivePanel extends JPanel {
 
     private void drawFigures(Graphics2D g2d) {
         if(!(gui.renderer == null) && !(gui.normalizedData == null))
-            g2d.drawImage(gui.renderer.drawPersp(), null, null);
+            g2d.drawImage(img, null, null);
 
         g2d.setPaint(Color.white);
         g2d.setStroke(new BasicStroke(1));
@@ -61,4 +64,11 @@ public class PerspectivePanel extends JPanel {
         }
     }
 
+    public BufferedImage getImg() {
+        return img;
+    }
+
+    public void setImg(BufferedImage img) {
+        this.img = img;
+    }
 }

@@ -266,7 +266,7 @@ public class Gui implements ChangeListener, ActionListener {
             yPanel.camEdges[i] = TransformHandler.ortY(pyramid.edges[i]);
             zPanel.camEdges[i] = TransformHandler.ortZ(pyramid.edges[i]);
         }
-
+        pPanel.setImg(renderer.drawPersp());
         repaintPanels();
     }
 

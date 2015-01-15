@@ -24,8 +24,8 @@ public class ColorPoint extends Point3D implements Comparable {
         triangles = new ArrayList<>();
     }
 
-    public ColorPoint(int i, int i1, int i2, Color color, double kd, double ks, int g) {
-        super(i, i1, i2);
+    public ColorPoint(int x, int y, int z, Color color, double kd, double ks, int g) {
+        super(x, y, z);
         this.color = color;
         this.kd = kd;
         this.ks = ks;
@@ -49,11 +49,17 @@ public class ColorPoint extends Point3D implements Comparable {
     public int compareTo(Object o) {
         ColorPoint cp = (ColorPoint) o;
 
-        if (cp.getY() < getY())
-            return -1;
-        else if (cp.getY() == getY())
-            return 0;
-        else return 1;
+        if (Double.compare(cp.getY(), getY()) > 0) {
+            return 1;
+        } else if (Double.compare(cp.getY(), getY()) == 0) {
+            if (Double.compare(cp.getX(), getX()) > 0) {
+                return 1;
+            } else if (Double.compare(cp.getX(), getX()) == 0) {
+                return 0;
+            } else {
+                return -1;
+            }
+        } else return -1;
     }
 
     @Override
