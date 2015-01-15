@@ -140,7 +140,9 @@ public class PictureRenderer {
                     s1.getZ() * bar[0] + s2.getZ() * bar[1] + s3.getZ() * bar[2],
                     Color.black
             );
-
+            toView.kd = v1.kd;
+            toView.ks = v1.ks;
+            toView.g = v1.g;
 
             if (toView.getZ() < zBuf[pixelX][scanlineY]) { //TODO LIGHT
                 zBuf[pixelX][scanlineY] = toView.getZ();
@@ -158,7 +160,7 @@ public class PictureRenderer {
                         gui.normalizedData.camera.getPosition()).getRGB();
 
                 int realY = gui.pPanel.getHeight() - scanlineY;
-                System.out.println(pixelX + " " + realY + " " + rgb);
+                //System.out.println(pixelX + " " + realY + " " + rgb);
                 img.setRGB(
                         pixelX,
                         realY,

@@ -34,7 +34,7 @@ public class PerspectivePanel extends JPanel {
 
         g2d.setPaint(Color.white);
         g2d.setStroke(new BasicStroke(1));
-        if (gui.CURRENT_FILE_PATH != null) {
+        /*if (gui.CURRENT_FILE_PATH != null) {
             for (Triangle t : gui.drawnData.triangles) {
                 int ax = (int) (TransformHandler.applyTransformToPoint(t.a, gui.currentTransform).getX());
                 int ay = getHeight() - (int) (TransformHandler.applyTransformToPoint(t.a, gui.currentTransform).getY());
@@ -61,7 +61,7 @@ public class PerspectivePanel extends JPanel {
                         cy);
 
             }
-        }
+        }*/
     }
 
     public BufferedImage getImg() {

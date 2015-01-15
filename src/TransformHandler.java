@@ -236,29 +236,74 @@ public final class TransformHandler {
 
     public static Color phongLight(Light l, ColorPoint cp, Point3D camPos) {    //W UKŁADZIE OBSERWATORA
         HashMap<Integer, Integer> konik;
-        Vec3d lm = new Vec3d(l.getX() - cp.getX(), l.getY() - cp.getY(), l.getZ() - cp.getZ());
-        lm.normalize();
-        Vec3d norm = cp.normal;
-        Vec3d vw = new Vec3d(camPos.getX() - cp.getX(), camPos.getY() - cp.getY(), camPos.getZ() - cp.getZ());
-        vw.normalize();
-        vw.mul(0.5);
-        vw.add(lm);
-        double result = cp.kd * norm.dot(lm) + cp.ks * Math.max(Math.pow(norm.dot(vw), cp.g), 0);
-        //Ka + Kd * (N dot L) + Ks * (N dot ( L + V / 2))^n
-        Color c = new Color(
-                phongLightBeam(
-                        l.getColor().getRed(),
-                        cp.color.getRed(),
-                        result),
-                phongLightBeam(
-                        l.getColor().getGreen(),
-                        cp.color.getGreen(),
-                        result),
-                phongLightBeam(
-                        l.getColor().getBlue(),
-                        cp.color.getBlue(),
-                        result));
-        return c;
+        Vec3d lnorm = new Vec3d(l.getX() - cp.getX(), l.getY() - cp.getY(), l.getZ() - cp.getZ());
+        lnorm.normalize();
+
+        Vec3d norm = new Vec3d(cp.normal);
+        Vec3d vnorm = new Vec3d(camPos.getX() - cp.getX(), camPos.getY() - cp.getY(), camPos.getZ() - cp.getZ());
+        vnorm.normalize();
+
+
+        Vec3d halfAngle = new Vec3d();
+        halfAngle.set(vnorm);
+        halfAngle.add(lnorm);
+        halfAngle.normalize();
+
+        Vec3d os = new Vec3d(norm);
+        os.mul(2 * norm.dot(vnorm));
+        os.sub(vnorm);
+        os.normalize();
+        double OsdotL = os.dot(lnorm);
+        double OnePer255 = 1. / 255.;
+
+        double NdotL = norm.dot(lnorm);
+        double HdotN = norm.dot(halfAngle);
+
+        NdotL = NdotL < 0. ? 0. : NdotL * cp.kd;
+        if (NdotL == 0)
+            OsdotL = 0;
+        else
+            OsdotL = OsdotL < 0. ? 0. : Math.pow(OsdotL, cp.g) * cp.ks;
+        //NdotL = NdotL < 0. ? 0. : NdotL * cp.kd;
+        //HdotN = HdotN < 0. ? 0. : Math.pow(HdotN, cp.g) * cp.ks;
+        System.out.println(NdotL + " " + OsdotL);
+
+        //R
+        double r = cp.color.getRed() * OnePer255;
+        r += NdotL * l.getColor().getRed() * OnePer255;
+        r += OsdotL * l.getColor().getRed() * OnePer255;
+
+        if (r < 0)
+            r = 0;
+        else if (r < 1)
+            r = Math.floor(r * 255);
+        else r = 255;
+
+        //G
+        double g = cp.color.getGreen() * OnePer255;
+        g += NdotL * l.getColor().getGreen() * OnePer255;
+        g += OsdotL * l.getColor().getGreen() * OnePer255;
+
+        if (g < 0)
+            g = 0;
+        else if (g < 1)
+            g = Math.floor(g * 255);
+        else g = 255;
+
+        //B
+        double b = cp.color.getBlue() * OnePer255;
+        b += NdotL * l.getColor().getBlue() * OnePer255;
+        b += OsdotL * l.getColor().getBlue() * OnePer255;
+
+        if (b < 0)
+            b = 0;
+        else if (b < 1)
+            b = Math.floor(b * 255);
+        else b = 255;
+
+
+        return new Color((int) r, (int) g, (int) b);
+
     }
 
     public static double[] findBarycentric(double px, double py, double x1, double y1, double x2, double y2, double x3, double y3) { // W 2D
@@ -316,7 +361,4 @@ public final class TransformHandler {
         return norm;
     }
 
-    public static int phongLightBeam(int lightC, int vertC, double res) {
-        return (int) (vertC * (res + (double) (lightC / 255))); //lepiej
-    }
 }
