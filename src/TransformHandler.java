@@ -261,24 +261,44 @@ public final class TransformHandler {
         return c;
     }
 
-    public static double[] findBarycentric(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3) { // W UKŁADZIE OBSERWATORA
+    public static double[] findBarycentric(double px, double py, double x1, double y1, double x2, double y2, double x3, double y3) { // W 2D
         double a, b, c;
 
-        b = (double) (((x1 - x3) * (py - y3) - px + x3)) /
+     /*   b = (double) (((x1 - x3) * (py - y3) - px + x3)) /
                 ((y2 - y3) * (x1 - x3));
 
         a = ((px - b * (x2 - x3) - x3)) /
                 (x1 - x3);
+*/
+        a = ((y2 - y3) * (px - x3) + (x3 - x2) * (py - y3)) /
+                ((y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3));
+
+        b = ((y3 - y1) * (px - x3) + (x1 - x3) * (py - y3)) /
+                ((y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3));
 
         c = 1 - a - b;
         double[] lambdas = {a, b, c};
         return lambdas;
     }
 
-    public static Color findColorByBar(double l1, double l2, double l3, int r1, int g1, int b1, int r2, int g2, int b2, int r3, int g3, int b3) {
+    public static Color findColorByBar(double l1, double l2, double l3, double r1, double g1, double b1, double r2, double g2, double b2, double r3, double g3, double b3) {
         int r = (int) (r1 * l1) + (int) (r2 * l2) + (int) (r3 * l3);
+        if (r < 0)
+            r = 0;
+        else if (r > 255)
+            r = 255;
+
         int g = (int) (g1 * l1) + (int) (g2 * l2) + (int) (g3 * l3);
+        if (g < 0)
+            g = 0;
+        else if (g > 255)
+            g = 255;
+
         int b = (int) (b1 * l1) + (int) (b2 * l2) + (int) (b3 * l3);
+        if (b < 0)
+            b = 0;
+        else if (b > 255)
+            b = 255;
         return new Color(r, g, b);
     }
 

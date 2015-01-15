@@ -142,10 +142,10 @@ public class PictureRenderer {
             );
 
 
-            if (toView.getZ() < zBuf[pixelX][scanlineY]) {
+            if (toView.getZ() < zBuf[pixelX][scanlineY]) { //TODO LIGHT
                 zBuf[pixelX][scanlineY] = toView.getZ();
                 toView.normal = TransformHandler.findNormByBar(bar[0], bar[1], bar[2], s1.normal, s2.normal, s3.normal);
-                /*toView.color = TransformHandler.findColorByBar(
+                toView.color = TransformHandler.findColorByBar(
                         bar[0], bar[1], bar[2],
                         s1.color.getRed(), s1.color.getGreen(), s1.color.getBlue(),
                         s2.color.getRed(), s2.color.getGreen(), s2.color.getBlue(),
@@ -155,14 +155,14 @@ public class PictureRenderer {
                 int rgb = TransformHandler.phongLight(
                         gui.normalizedData.light,
                         toView,
-                        gui.normalizedData.camera.getPosition()).getRGB();*/
-                int rgb = Color.BLACK.getRGB();
+                        gui.normalizedData.camera.getPosition()).getRGB();
+
                 int realY = gui.pPanel.getHeight() - scanlineY;
-                //System.out.println(pixelX+ " "+realY + " " + rgb);
+                System.out.println(pixelX + " " + realY + " " + rgb);
                 img.setRGB(
                         pixelX,
                         realY,
-                        Color.BLACK.getRGB()//test
+                        rgb//test
                 );
             }
 
@@ -227,9 +227,6 @@ public class PictureRenderer {
         return true;
     }
 
-    private void putPixel(double[] bar, ColorPoint a, ColorPoint b, ColorPoint c, ColorPoint p) {
-        // ColorPoint cp = new ColorPoint()
-    }
 
     private ArrayList<Triangle> sortFull(ArrayList<Triangle> trList) {
         return null;
