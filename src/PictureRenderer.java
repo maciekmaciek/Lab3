@@ -1,3 +1,5 @@
+import com.sun.javafx.geom.Vec3d;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -76,7 +78,6 @@ public class PictureRenderer {
     }
 
     private void iterateFlatBottomTr(Triangle tr2D, Triangle tr3D) {
-        tr2D.sort();
         ColorPoint v1 = tr2D.sortedTransformed.get(0);
         ColorPoint v2 = tr2D.sortedTransformed.get(1);
         ColorPoint v3 = tr2D.sortedTransformed.get(2);
@@ -97,7 +98,6 @@ public class PictureRenderer {
     }
 
     private void iterateFlatTopTr(Triangle tr2D, Triangle tr3D) {
-        tr2D.sort();
         ColorPoint v1 = tr2D.sortedTransformed.get(0);
         ColorPoint v2 = tr2D.sortedTransformed.get(1);
         ColorPoint v3 = tr2D.sortedTransformed.get(2);
@@ -134,39 +134,44 @@ public class PictureRenderer {
                     (int) v2.getX(), (int) v2.getY(),
                     (int) v3.getX(), (int) v3.getY());
 
+            double bar3D[] = TransformHandler.findBarycentric(
+                    pixelX, scanlineY,
+                    (int) s1.getX(), (int) s1.getY(),
+                    (int) s2.getX(), (int) s2.getY(),
+                    (int) s3.getX(), (int) s3.getY());
+
+            /*ColorPoint toView = new ColorPoint(
+                    s1.getX() * bar3D[0] + s2.getX() * bar3D[1] + s3.getX() * bar3D[2],
+                    s1.getY() * bar3D[0] + s2.getY() * bar3D[1] + s3.getY() * bar3D[2],
+                    s1.getZ() * bar3D[0] + s2.getZ() * bar3D[1] + s3.getZ() * bar3D[2],
+                    v1.color
+            );//jednak nie*/
+
             ColorPoint toView = new ColorPoint(
                     s1.getX() * bar[0] + s2.getX() * bar[1] + s3.getX() * bar[2],
                     s1.getY() * bar[0] + s2.getY() * bar[1] + s3.getY() * bar[2],
                     s1.getZ() * bar[0] + s2.getZ() * bar[1] + s3.getZ() * bar[2],
-                    Color.black
-            );
+                    v1.color
+            );// może w 3D lepiej? nie.
             toView.kd = v1.kd;
             toView.ks = v1.ks;
             toView.g = v1.g;
 
-            if (toView.getZ() < zBuf[pixelX][scanlineY]) { //TODO LIGHT
+            //if (isNear(toView.getX(), toView.getY(), toView.getZ(), pixelX, scanlineY)) {
+            if (toView.getZ() < zBuf[pixelX][scanlineY]) {
                 zBuf[pixelX][scanlineY] = toView.getZ();
-                toView.normal = TransformHandler.findNormByBar(bar[0], bar[1], bar[2], s1.normal, s2.normal, s3.normal);
-                toView.color = TransformHandler.findColorByBar(
+
+                /*toView.color = TransformHandler.findColorByBar(
                         bar[0], bar[1], bar[2],
                         s1.color.getRed(), s1.color.getGreen(), s1.color.getBlue(),
                         s2.color.getRed(), s2.color.getGreen(), s2.color.getBlue(),
                         s3.color.getRed(), s3.color.getGreen(), s3.color.getBlue());
+                        */
+                //gShading(tr, toView, bar, pixelX, scanlineY);
+                pShading(tr, toView, bar, pixelX, scanlineY);
 
-
-                int rgb = TransformHandler.phongLight(
-                        gui.normalizedData.light,
-                        toView,
-                        gui.normalizedData.camera.getPosition()).getRGB();
-
-                int realY = gui.pPanel.getHeight() - scanlineY;
-                //System.out.println(pixelX + " " + realY + " " + rgb);
-                img.setRGB(
-                        pixelX,
-                        realY,
-                        rgb//test
-                );
-            }
+            } //else
+            //System.out.println("Nie wpuściłem: [" + pixelX + "][" + scanlineY +"] Old: " + zBuf[pixelX][scanlineY] + " New: " +  toView.getZ());
 
 
             /*ColorPoint toView = (ColorPoint) TransformHandler.applyTransformToPoint(new ColorPoint(pixelX, scanlineY, 0, Color.BLACK), gui.viewToFlat.inverse());
@@ -195,6 +200,56 @@ public class PictureRenderer {
             }
             */
         }
+    }
+
+    private void pShading(Triangle tr, ColorPoint toView, double[] bar, int x, int y) {
+        ColorPoint s1 = tr.sorted.get(0);
+        ColorPoint s2 = tr.sorted.get(1);
+        ColorPoint s3 = tr.sorted.get(2);
+        toView.normal = TransformHandler.findNormByBar(bar[0], bar[1], bar[2], s1.normal, s2.normal, s3.normal);
+        int rgb = TransformHandler.phongLight(
+                gui.normalizedData.light,
+                toView,
+                toView.normal,
+                gui.normalizedData.camera.getPosition()).getRGB();
+
+        int realY = gui.pPanel.getHeight() - y;
+        img.setRGB(
+                x,
+                realY,
+                rgb//test
+        );
+    }
+
+    private void gShading(Triangle tr, ColorPoint toView, double[] bar, int x, int y) {
+        Color s1 = TransformHandler.phongLight(
+                gui.normalizedData.light,
+                tr.sorted.get(0),
+                tr.sorted.get(0).normal,
+                gui.normalizedData.camera.getPosition());
+        Color s2 = TransformHandler.phongLight(
+                gui.normalizedData.light,
+                tr.sorted.get(1),
+                tr.sorted.get(1).normal,
+                gui.normalizedData.camera.getPosition());
+        Color s3 = TransformHandler.phongLight(
+                gui.normalizedData.light,
+                tr.sorted.get(2),
+                tr.sorted.get(2).normal,
+                gui.normalizedData.camera.getPosition());
+
+        Color result = TransformHandler.findColorByBar(
+                bar[0], bar[1], bar[2],
+                s1.getRed(), s1.getGreen(), s1.getBlue(),
+                s2.getRed(), s2.getGreen(), s2.getBlue(),
+                s3.getRed(), s3.getGreen(), s3.getBlue());
+
+        img.setRGB(
+                x,
+                gui.pPanel.getHeight() - y,
+                result.getRGB()
+        );
+
     }
 
     private boolean isInboundTr(Triangle triangle) {
@@ -229,6 +284,20 @@ public class PictureRenderer {
         return true;
     }
 
+    boolean isNear(double x, double y, double z, int i, int j) {
+        Vec3d newDist = new Vec3d(
+                gui.normalizedData.camera.getPosition().getX() - x,
+                gui.normalizedData.camera.getPosition().getY() - y,
+                gui.normalizedData.camera.getPosition().getZ() - z
+        );
+        double newD = newDist.length();
+        if (newD <= zBuf[i][j]) {
+            zBuf[i][j] = newD;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private ArrayList<Triangle> sortFull(ArrayList<Triangle> trList) {
         return null;

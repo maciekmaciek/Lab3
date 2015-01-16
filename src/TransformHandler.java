@@ -219,8 +219,8 @@ public final class TransformHandler {
         res = scale(res, sx, sy, 1);
 
 // przesunięcie do 0.0*/
-        double tx = pyramid.getWidth();
-        double ty = pyramid.getHeight();
+        double tx = pyramid.getWidth() * sx / 2;
+        double ty = pyramid.getHeight() * sy / 2;
 
         res = translate(res, tx, ty, 0);
 
@@ -234,12 +234,12 @@ public final class TransformHandler {
         return res;
     }
 
-    public static Color phongLight(Light l, ColorPoint cp, Point3D camPos) {    //W UKŁADZIE OBSERWATORA
+    public static Color phongLight(Light l, ColorPoint cp, Vec3d normal, Point3D camPos) {    //W UKŁADZIE OBSERWATORA
         HashMap<Integer, Integer> konik;
         Vec3d lnorm = new Vec3d(l.getX() - cp.getX(), l.getY() - cp.getY(), l.getZ() - cp.getZ());
         lnorm.normalize();
 
-        Vec3d norm = new Vec3d(cp.normal);
+        Vec3d norm = new Vec3d(normal);
         Vec3d vnorm = new Vec3d(camPos.getX() - cp.getX(), camPos.getY() - cp.getY(), camPos.getZ() - cp.getZ());
         vnorm.normalize();
 
@@ -265,7 +265,7 @@ public final class TransformHandler {
         else
             OsdotL = OsdotL < 0. ? 0. : Math.pow(OsdotL, cp.g) * cp.ks;
         //NdotL = NdotL < 0. ? 0. : NdotL * cp.kd;
-        //HdotN = HdotN < 0. ? 0. : Math.pow(HdotN, cp.g) * cp.ks;
+        HdotN = HdotN < 0. ? 0. : Math.pow(HdotN, cp.g) * cp.ks;
         System.out.println(NdotL + " " + OsdotL);
 
         //R
