@@ -128,6 +128,7 @@ public class PictureRenderer {
             ColorPoint s2 = tr.sorted.get(1);
             ColorPoint s3 = tr.sorted.get(2);
 
+
             double bar[] = TransformHandler.findBarycentric(
                     pixelX, scanlineY,
                     (int) v1.getX(), (int) v1.getY(),

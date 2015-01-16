@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public final class TransformHandler {
 
-    private static final double EPSILON = 0.5;
+    private static final double EPSILON = 0.00001;
 
     private TransformHandler() {
     }
@@ -260,11 +260,11 @@ public final class TransformHandler {
         double NdotL = norm.dot(lnorm);
         double HdotN = norm.dot(halfAngle);
 
-        NdotL = NdotL < 0. ? 0. : NdotL * cp.kd;
+        NdotL = Double.compare(NdotL, 0.) < 0 ? 0. : NdotL * cp.kd;
         if (NdotL == 0)
             OsdotL = 0;
         else
-            OsdotL = OsdotL < 0. ? 0. : Math.pow(OsdotL, cp.g) * cp.ks;
+            OsdotL = Double.compare(OsdotL, 0.) < 0 ? 0. : Math.pow(OsdotL, cp.g) * cp.ks;
         //NdotL = NdotL < 0. ? 0. : NdotL * cp.kd;
         HdotN = HdotN < 0. ? 0. : Math.pow(HdotN, cp.g) * cp.ks;
         //System.out.println(NdotL + " " + OsdotL);
