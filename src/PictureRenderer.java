@@ -134,11 +134,11 @@ public class PictureRenderer {
                     (int) v2.getX(), (int) v2.getY(),
                     (int) v3.getX(), (int) v3.getY());
 
-            double bar3D[] = TransformHandler.findBarycentric(
+            /*double bar3D[] = TransformHandler.findBarycentric(
                     pixelX, scanlineY,
                     (int) s1.getX(), (int) s1.getY(),
                     (int) s2.getX(), (int) s2.getY(),
-                    (int) s3.getX(), (int) s3.getY());
+                    (int) s3.getX(), (int) s3.getY());*/
 
             /*ColorPoint toView = new ColorPoint(
                     s1.getX() * bar3D[0] + s2.getX() * bar3D[1] + s3.getX() * bar3D[2],

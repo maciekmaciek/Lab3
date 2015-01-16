@@ -274,9 +274,10 @@ public class Gui implements ChangeListener, ActionListener {
     private void normalizeDataToView() {
         Light newL = (Light) TransformHandler.applyTransformToPoint(pyramid.getLight(), worldToView);
         Camera newCam = new Camera();
-        newCam.setAngle(drawnData.camera.getAngle());
-        newCam.setCenter(new Point3D(0, 0, 0));
-        newCam.setPosition(TransformHandler.applyTransformToPoint(drawnData.camera.getPosition(), worldToView));
+        newCam.setAngle(pyramid.camera.getAngle());
+        newCam.setCenter(TransformHandler.applyTransformToPoint(pyramid.getCamera().getCenter(), worldToView));
+        newCam.setPosition(TransformHandler.applyTransformToPoint(pyramid.camera.getPosition(), worldToView));
+        System.out.println("newCam:" + newCam.getPosition().getX() + " " + newCam.getPosition().getY() + " " + newCam.getPosition().getZ());
         ArrayList<ColorPoint> newPoints = new ArrayList<ColorPoint>();
         for (ColorPoint cp : drawnData.points) {
             newPoints.add((ColorPoint) TransformHandler.applyTransformToPoint(cp, worldToView));

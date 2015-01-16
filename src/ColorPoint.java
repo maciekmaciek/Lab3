@@ -37,11 +37,14 @@ public class ColorPoint extends Point3D implements Comparable {
 
     public void calcNormal() {
         Vec3d temp = new Vec3d();
+        double length = 0;
         for (Triangle t : triangles) {
             temp.add(t.normal);
+            length += t.normal.length();
         }
         normal.add(temp);
-        normal.mul(1 / normal.length());
+        normal.mul(1 / length);
+        normal.normalize();
     }
 
 

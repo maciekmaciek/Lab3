@@ -1,4 +1,5 @@
 import Jama.Matrix;
+import com.sun.javafx.geom.Vec2d;
 import com.sun.javafx.geom.Vec3d;
 import javafx.geometry.Point3D;
 
@@ -266,7 +267,7 @@ public final class TransformHandler {
             OsdotL = OsdotL < 0. ? 0. : Math.pow(OsdotL, cp.g) * cp.ks;
         //NdotL = NdotL < 0. ? 0. : NdotL * cp.kd;
         HdotN = HdotN < 0. ? 0. : Math.pow(HdotN, cp.g) * cp.ks;
-        System.out.println(NdotL + " " + OsdotL);
+        //System.out.println(NdotL + " " + OsdotL);
 
         //R
         double r = cp.color.getRed() * OnePer255;
@@ -315,13 +316,19 @@ public final class TransformHandler {
         a = ((px - b * (x2 - x3) - x3)) /
                 (x1 - x3);
 */
-        a = ((y2 - y3) * (px - x3) + (x3 - x2) * (py - y3)) /
-                ((y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3));
-
-        b = ((y3 - y1) * (px - x3) + (x1 - x3) * (py - y3)) /
-                ((y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3));
-
-        c = 1 - a - b;
+        Vec2d v0 = new Vec2d(x2 - x1, y2 - y1), v1 = new Vec2d(x3 - x1, y3 - y1), v2 = new Vec2d(px - x1, py - y1);
+        double d00 = v0.x * v0.x + v0.y * v0.y;
+        double d01 = v0.x * v1.x + v0.y * v1.y;
+        double d11 = v1.x * v1.x + v1.y * v1.y;
+        double d20 = v0.x * v2.x + v0.y * v2.y;
+        double d21 = v2.x * v1.x + v2.y * v1.y;
+        double denom = d00 * d11 - d01 * d01;
+        a = (d11 * d20 - d01 * d21) / denom;
+        b = (d00 * d21 - d01 * d20) / denom;
+        c = 1.0 - a - b;
+        a = a < 0 ? 0 : a;
+        b = b < 0 ? 0 : b;
+        c = c < 0 ? 0 : c;
         double[] lambdas = {a, b, c};
         return lambdas;
     }
