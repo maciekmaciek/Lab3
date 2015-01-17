@@ -16,6 +16,7 @@ public class ColorPoint extends Point3D implements Comparable {
     int g;   //polyskliwosc g
     Vec3d normal;
     ArrayList<Triangle> triangles;
+    final double EPS = 0.0001;
 
     public ColorPoint(double x, double y, double z, Color c) {
         super(x, y, z);
@@ -52,12 +53,12 @@ public class ColorPoint extends Point3D implements Comparable {
     public int compareTo(Object o) {
         ColorPoint cp = (ColorPoint) o;
 
-        if (Double.compare(cp.getY(), getY()) > 0) {
+        if (cp.getY() - getY() > EPS) {
             return 1;
-        } else if (Double.compare(cp.getY(), getY()) == 0) {
-            if (Double.compare(cp.getX(), getX()) > 0) {
+        } else if (Math.abs(cp.getY() - getY()) < EPS) {
+            if (cp.getX() - getX() > EPS) {
                 return 1;
-            } else if (Double.compare(cp.getX(), getX()) == 0) {
+            } else if (Math.abs(cp.getX() - getX()) < EPS) {
                 return 0;
             } else {
                 return -1;
@@ -69,7 +70,7 @@ public class ColorPoint extends Point3D implements Comparable {
     public boolean equals(Object o) {
         if (o instanceof ColorPoint) {
             ColorPoint c = (ColorPoint) o;
-            return c.getX() == getX() && c.getY() == getY() && c.getZ() == getZ();
+            return Math.abs(c.getX() - getX()) < EPS && Math.abs(c.getY() - getY()) < EPS && Math.abs(c.getZ() - getZ()) < EPS;
         }
         return false;
     }

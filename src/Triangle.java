@@ -17,6 +17,8 @@ public class Triangle implements Comparable {
     Vec3d normal;
     ArrayList<ColorPoint> sortedTransformed;
     ArrayList<ColorPoint> sorted;
+    final double EPS = 0.0001;
+    Matrix currentTpFlat;
 
     public Triangle(ColorPoint a, ColorPoint b, ColorPoint c) {
         this.a = a;
@@ -32,11 +34,18 @@ public class Triangle implements Comparable {
         sortedTransformed.add((ColorPoint) TransformHandler.applyTransformToPoint(a, transform));
         sortedTransformed.add((ColorPoint) TransformHandler.applyTransformToPoint(b, transform));
         sortedTransformed.add((ColorPoint) TransformHandler.applyTransformToPoint(c, transform));
-        sort();
+
+        sort(transform);
     }
 
 
-    void sort() { //
+    void sort(Matrix transform) { //
+
+        sortedTransformed.clear();
+        sortedTransformed.add((ColorPoint) TransformHandler.applyTransformToPoint(a, transform));
+        sortedTransformed.add((ColorPoint) TransformHandler.applyTransformToPoint(b, transform));
+        sortedTransformed.add((ColorPoint) TransformHandler.applyTransformToPoint(c, transform));
+
         sorted.clear();
         sorted.add(a);
         sorted.add(b);
@@ -67,8 +76,8 @@ public class Triangle implements Comparable {
 
     }
 
-    public Triangle[] split() { //UWAGA ZWRACA 2D
-        sort();
+    public Triangle[] split(Matrix transform) { //UWAGA ZWRACA 2D
+        sort(transform);
         Vec3d norm1 = sortedTransformed.get(0).normal;
         Vec3d norm2 = sortedTransformed.get(0).normal;
         Vec3d norm3 = sortedTransformed.get(0).normal;
@@ -95,22 +104,23 @@ public class Triangle implements Comparable {
         ColorPoint v2 = sortedTransformed.get(1);
         ColorPoint v3 = sortedTransformed.get(2);
 
-        if (y1 == y2) {
+        if (Math.abs(y1 - y2) < EPS) {
             t[1] = new Triangle(v1, v2, v3);
             t[1].sortedTransformed.add(v1);       //trik do sortowania
             t[1].sortedTransformed.add(v2);
             t[1].sortedTransformed.add(v3);
-            t[1].sort();
+            t[1].sort(transform);
             return t;
-        } else if (y2 == y3) {
+        } else if (Math.abs(y2 - y3) < EPS) {
             t[0] = new Triangle(v1, v2, v3);
             t[0] = new Triangle(v1, v2, v3);
             t[0].sortedTransformed.add(v1);       //trik do sortowania
             t[0].sortedTransformed.add(v2);
             t[0].sortedTransformed.add(v3);
-            t[0].sort();
+            t[0].sort(transform);
             return t;
         }
+
         double y4 = y2;
         double x4 = ((y4 - y1) * ((x1 - x3) / (y1 - y3)) + x1);
         double z4 = ((y4 - y1) * ((z1 - z3) / (y1 - y3)) + z1);
@@ -131,8 +141,8 @@ public class Triangle implements Comparable {
         t2.sortedTransformed.add(v2);       //trik do sortowania
         t2.sortedTransformed.add(v4);
         t2.sortedTransformed.add(v3);
-        t1.sort();
-        t2.sort();
+        t1.sort(transform);
+        t2.sort(transform);
         //Collections.sort(t1.sortedTransformed);
         //Collections.sort(t2.sortedTransformed);
         t[0] = t1;

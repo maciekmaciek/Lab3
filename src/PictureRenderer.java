@@ -1,4 +1,6 @@
+import Jama.Matrix;
 import com.sun.javafx.geom.Vec3d;
+import javafx.geometry.Point3D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -6,6 +8,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Collections;
+
 
 /**
  * Created by Maciej Wolański
@@ -56,18 +59,35 @@ public class PictureRenderer {
     }
 
     private void iterateTriangle(Triangle tr) {
-        Triangle[] split = tr.split();
+        Triangle[] split = tr.split(gui.viewToFlat);
+        System.out.println("--------W ITERATE---------");
+        Matrix m = gui.viewToFlat;
+        Point3D p3d1 = TransformHandler.applyTransformToPoint(tr.sorted.get(0), m);
+        Point3D p3d2 = TransformHandler.applyTransformToPoint(tr.sorted.get(1), m);
+        Point3D p3d3 = TransformHandler.applyTransformToPoint(tr.sorted.get(2), m);
+        System.out.println(tr.sorted.get(0).getX() + ", " + tr.sorted.get(0).getY() + ", " + tr.sorted.get(0).getZ());
+        System.out.println(tr.sorted.get(1).getX() + ", " + tr.sorted.get(1).getY() + ", " + tr.sorted.get(1).getZ());
+        System.out.println(tr.sorted.get(2).getX() + ", " + tr.sorted.get(2).getY() + ", " + tr.sorted.get(2).getZ());
+        System.out.println(tr.sortedTransformed.get(0).getX() + ", " + tr.sortedTransformed.get(0).getY() + ", " + tr.sortedTransformed.get(0).getZ());
+        System.out.println(tr.sortedTransformed.get(1).getX() + ", " + tr.sortedTransformed.get(1).getY() + ", " + tr.sortedTransformed.get(1).getZ());
+        System.out.println(tr.sortedTransformed.get(2).getX() + ", " + tr.sortedTransformed.get(2).getY() + ", " + tr.sortedTransformed.get(2).getZ());
+        System.out.println(p3d1.getX() + ", " + p3d1.getY() + ", " + p3d1.getZ());
+        System.out.println(p3d2.getX() + ", " + p3d2.getY() + ", " + p3d2.getZ());
+        System.out.println(p3d3.getX() + ", " + p3d3.getY() + ", " + p3d3.getZ());
+
         if (split[0] != null) {
             //split[0].transform(gui.viewToFlat);
             //split[0].sort();
             iterateFlatTopTr(
                     split[0], tr);
         }
+
         if (split[1] != null) {
             //split[1].transform(gui.viewToFlat);
             iterateFlatBottomTr(
                     split[1], tr);
         }
+
 
         //pętla
         //wyliczz
@@ -78,9 +98,9 @@ public class PictureRenderer {
     }
 
     private void iterateFlatBottomTr(Triangle tr2D, Triangle tr3D) {
-        ColorPoint v1 = tr2D.sortedTransformed.get(0);
-        ColorPoint v2 = tr2D.sortedTransformed.get(1);
-        ColorPoint v3 = tr2D.sortedTransformed.get(2);
+        ColorPoint v1 = tr2D.sorted.get(0);
+        ColorPoint v2 = tr2D.sorted.get(1);
+        ColorPoint v3 = tr2D.sorted.get(2);
         double invslope1 = (v3.getX() - v1.getX()) / (v3.getY() - v1.getY());
         double invslope2 = (v3.getX() - v2.getX()) / (v3.getY() - v2.getY());
 
@@ -98,9 +118,9 @@ public class PictureRenderer {
     }
 
     private void iterateFlatTopTr(Triangle tr2D, Triangle tr3D) {
-        ColorPoint v1 = tr2D.sortedTransformed.get(0);
-        ColorPoint v2 = tr2D.sortedTransformed.get(1);
-        ColorPoint v3 = tr2D.sortedTransformed.get(2);
+        ColorPoint v1 = tr2D.sorted.get(0);
+        ColorPoint v2 = tr2D.sorted.get(1);
+        ColorPoint v3 = tr2D.sorted.get(2);
         double invslope1 = (v2.getX() - v1.getX()) / (v2.getY() - v1.getY());
         double invslope2 = (v3.getX() - v1.getX()) / (v3.getY() - v1.getY());
 
@@ -127,6 +147,25 @@ public class PictureRenderer {
             ColorPoint s1 = tr.sorted.get(0);
             ColorPoint s2 = tr.sorted.get(1);
             ColorPoint s3 = tr.sorted.get(2);
+/*
+
+            Matrix m = gui.viewToFlat;
+            Point3D p3d1 = TransformHandler.applyTransformToPoint(s1, m);
+            Point3D p3d2 = TransformHandler.applyTransformToPoint(s2, m);
+            Point3D p3d3 = TransformHandler.applyTransformToPoint(s3, m);
+            System.out.println("--------W PUT PIXEL---------");
+            System.out.println(s1.getX() + ", " + s1.getY()  + ", " + s1.getZ());
+            System.out.println(s2.getX() + ", " + s2.getY()  + ", " + s2.getZ());
+            System.out.println(s3.getX() + ", " + s3.getY()  + ", " + s3.getZ());
+            System.out.println(v1.getX() + ", " + v1.getY()  + ", " + v1.getZ());
+            System.out.println(v2.getX() + ", " + v2.getY()  + ", " + v2.getZ());
+            System.out.println(v3.getX() + ", " + v3.getY()  + ", " + v3.getZ());
+            System.out.println(p3d1.getX() + ", " + p3d1.getY()  + ", " + p3d1.getZ());
+            System.out.println(p3d2.getX() + ", " + p3d2.getY()  + ", " + p3d2.getZ());
+            System.out.println(p3d3.getX() + ", " + p3d3.getY()  + ", " + p3d3.getZ());
+
+*/
+
 
 
             double bar[] = TransformHandler.findBarycentric(
@@ -146,8 +185,14 @@ public class PictureRenderer {
                     s1.getY() * bar3D[0] + s2.getY() * bar3D[1] + s3.getY() * bar3D[2],
                     s1.getZ() * bar3D[0] + s2.getZ() * bar3D[1] + s3.getZ() * bar3D[2],
                     v1.color
-            );//jednak nie*/
+            );//jednak nie
 
+            ColorPoint toView = new ColorPoint(
+                    s1.getX() * 0.3333333 + s2.getX() * 0.33333333 + s3.getX() * 0.33333,
+                    s1.getY() * 0.3333333 + s2.getY() * 0.33333333 + s3.getY() * 0.33333,
+                    s1.getZ() * 0.3333333 + s2.getZ() * 0.33333333 + s3.getZ() * 0.33333,
+                    v1.color
+            );// może w 3D lepiej? nie.*/
             ColorPoint toView = new ColorPoint(
                     s1.getX() * bar[0] + s2.getX() * bar[1] + s3.getX() * bar[2],
                     s1.getY() * bar[0] + s2.getY() * bar[1] + s3.getY() * bar[2],

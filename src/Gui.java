@@ -387,21 +387,21 @@ public class Gui implements ChangeListener, ActionListener {
 
 
         private boolean foundCam(MouseEvent e) {
-            return (Math.abs(e.getX() - xPanel.cameraPos.getX()) <= 4 && Math.abs(e.getY() - (xPanel.getHeight() - xPanel.cameraPos.getY())) <= 4) ||
-                    (Math.abs(e.getX() - yPanel.cameraPos.getX()) <= 4 && Math.abs(e.getY() - (yPanel.getHeight() - yPanel.cameraPos.getY())) <= 4) ||
-                    (Math.abs(e.getX() - zPanel.cameraPos.getX()) <= 4 && Math.abs(e.getY() - (zPanel.getHeight() - zPanel.cameraPos.getY())) <= 4);
+            return (Math.abs(e.getX() - xPanel.cameraPos.getX()) <= 7 && Math.abs(e.getY() - (xPanel.getHeight() - xPanel.cameraPos.getY())) <= 7) ||
+                    (Math.abs(e.getX() - yPanel.cameraPos.getX()) <= 7 && Math.abs(e.getY() - (yPanel.getHeight() - yPanel.cameraPos.getY())) <= 7) ||
+                    (Math.abs(e.getX() - zPanel.cameraPos.getX()) <= 7 && Math.abs(e.getY() - (zPanel.getHeight() - zPanel.cameraPos.getY())) <= 7);
         }
 
         private boolean foundCenter(MouseEvent e) {
-            return (Math.abs(e.getX() - xPanel.centerPos.getX()) <= 4 && Math.abs(e.getY() - (xPanel.getHeight() - xPanel.centerPos.getY())) <= 4) ||
-                    (Math.abs(e.getX() - yPanel.centerPos.getX()) <= 4 && Math.abs(e.getY() - (yPanel.getHeight() - yPanel.centerPos.getY())) <= 4) ||
-                    (Math.abs(e.getX() - zPanel.centerPos.getX()) <= 4 && Math.abs(e.getY() - (zPanel.getHeight() - zPanel.centerPos.getY())) <= 4);
+            return (Math.abs(e.getX() - xPanel.centerPos.getX()) <= 7 && Math.abs(e.getY() - (xPanel.getHeight() - xPanel.centerPos.getY())) <= 7) ||
+                    (Math.abs(e.getX() - yPanel.centerPos.getX()) <= 7 && Math.abs(e.getY() - (yPanel.getHeight() - yPanel.centerPos.getY())) <= 7) ||
+                    (Math.abs(e.getX() - zPanel.centerPos.getX()) <= 7 && Math.abs(e.getY() - (zPanel.getHeight() - zPanel.centerPos.getY())) <= 7);
         }
 
         private boolean foundLight(MouseEvent e) {
-            return (Math.abs(e.getX() - xPanel.lightPos.getX()) <= 4 && Math.abs(e.getY() - (xPanel.getHeight() - xPanel.lightPos.getY())) <= 4) ||
-                    (Math.abs(e.getX() - yPanel.lightPos.getX()) <= 4 && Math.abs(e.getY() - (yPanel.getHeight() - yPanel.lightPos.getY())) <= 4) ||
-                    (Math.abs(e.getX() - zPanel.lightPos.getX()) <= 4 && Math.abs(e.getY() - (zPanel.getHeight() - zPanel.lightPos.getY())) <= 4);
+            return (Math.abs(e.getX() - xPanel.lightPos.getX()) <= 7 && Math.abs(e.getY() - (xPanel.getHeight() - xPanel.lightPos.getY())) <= 7) ||
+                    (Math.abs(e.getX() - yPanel.lightPos.getX()) <= 7 && Math.abs(e.getY() - (yPanel.getHeight() - yPanel.lightPos.getY())) <= 7) ||
+                    (Math.abs(e.getX() - zPanel.lightPos.getX()) <= 7 && Math.abs(e.getY() - (zPanel.getHeight() - zPanel.lightPos.getY())) <= 7);
         }
 
 

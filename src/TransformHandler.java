@@ -1,5 +1,4 @@
 import Jama.Matrix;
-import com.sun.javafx.geom.Vec2d;
 import com.sun.javafx.geom.Vec3d;
 import javafx.geometry.Point3D;
 
@@ -310,12 +309,12 @@ public final class TransformHandler {
     public static double[] findBarycentric(double px, double py, double x1, double y1, double x2, double y2, double x3, double y3) { // W 2D
         double a, b, c;
 
-     /*   b = (double) (((x1 - x3) * (py - y3) - px + x3)) /
-                ((y2 - y3) * (x1 - x3));
-
-        a = ((px - b * (x2 - x3) - x3)) /
-                (x1 - x3);
-*/
+        double dett = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
+        a = (y2 - y3) * (px - x3) + (x3 - x2) * (py - y3);
+        b = (y3 - y1) * (px - x3) + (x1 - x3) * (py - y3);
+        a = a / dett;
+        b = b / dett;
+/*
         Vec2d v0 = new Vec2d(x2 - x1, y2 - y1), v1 = new Vec2d(x3 - x1, y3 - y1), v2 = new Vec2d(px - x1, py - y1);
         double d00 = v0.x * v0.x + v0.y * v0.y;
         double d01 = v0.x * v1.x + v0.y * v1.y;
@@ -324,7 +323,7 @@ public final class TransformHandler {
         double d21 = v2.x * v1.x + v2.y * v1.y;
         double denom = d00 * d11 - d01 * d01;
         a = (d11 * d20 - d01 * d21) / denom;
-        b = (d00 * d21 - d01 * d20) / denom;
+        b = (d00 * d21 - d01 * d20) / denom;*/
         c = 1.0 - a - b;
         a = a < 0 ? 0 : a;
         b = b < 0 ? 0 : b;
