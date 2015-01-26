@@ -1,6 +1,4 @@
-import Jama.Matrix;
 import com.sun.javafx.geom.Vec3d;
-import javafx.geometry.Point3D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -60,7 +58,7 @@ public class PictureRenderer {
 
     private void iterateTriangle(Triangle tr) {
         Triangle[] split = tr.split(gui.viewToFlat);
-        System.out.println("--------W ITERATE---------");
+        /*System.out.println("--------W ITERATE---------");
         Matrix m = gui.viewToFlat;
         Point3D p3d1 = TransformHandler.applyTransformToPoint(tr.sorted.get(0), m);
         Point3D p3d2 = TransformHandler.applyTransformToPoint(tr.sorted.get(1), m);
@@ -74,7 +72,7 @@ public class PictureRenderer {
         System.out.println(p3d1.getX() + ", " + p3d1.getY() + ", " + p3d1.getZ());
         System.out.println(p3d2.getX() + ", " + p3d2.getY() + ", " + p3d2.getZ());
         System.out.println(p3d3.getX() + ", " + p3d3.getY() + ", " + p3d3.getZ());
-
+*/
         if (split[0] != null) {
             //split[0].transform(gui.viewToFlat);
             //split[0].sort();

@@ -270,9 +270,19 @@ public final class TransformHandler {
 
         //R
         double r = cp.color.getRed() * OnePer255;
+        /*
         r += NdotL * l.getColor().getRed() * OnePer255;
         r += OsdotL * l.getColor().getRed() * OnePer255;
+*/
 
+        //W attentuation
+        double ATTENTUATION0 = 2;
+        double ATTENTUATION1 = 1;
+        double ATTENTUATION2 = 1;
+        double length = new Vec3d(l.getX() - cp.getX(), l.getY() - cp.getY(), l.getZ() - cp.getZ()).length();
+        double attInfluence = Math.min(1 / (ATTENTUATION0 + ATTENTUATION1 * length + ATTENTUATION2 * length * length), 1);
+        r += NdotL * l.getColor().getRed() * OnePer255 * attInfluence;
+        r += OsdotL * l.getColor().getRed() * OnePer255 * ATTENTUATION1 * attInfluence;
         if (r < 0)
             r = 0;
         else if (r < 1)
